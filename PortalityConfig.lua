@@ -102,26 +102,38 @@ function Portality:CreateGUI()
         parent:AddChild(ScrollContainer)
 
         if isSpell then
-            for _, expansionPortals in ipairs(dataList) do
-                local HasVisiblePortals = false
-                for spellID, isAvailable in pairs(expansionPortals) do
-                    if isAvailable then
-                        if not HasVisiblePortals then
-                            local ExpansionHeading = AG:Create("Heading")
-                            ExpansionHeading:SetText(Portality.Data.ChallengeModePortalsByExpansion[expansionPortals])
-                            ExpansionHeading:SetFullWidth(true)
-                            ScrollContainer:AddChild(ExpansionHeading)
-                            HasVisiblePortals = true
-                        end
+            if dataList == Portality.Data.ChallengeModePortals then
+                for _, expansionPortals in ipairs(dataList) do
+                    local HasVisiblePortals = false
+                    for spellID, isAvailable in pairs(expansionPortals) do
+                        if isAvailable then
+                            if not HasVisiblePortals then
+                                local ExpansionHeading = AG:Create("Heading")
+                                ExpansionHeading:SetText(Portality.Data.ChallengeModePortalsByExpansion[expansionPortals])
+                                ExpansionHeading:SetFullWidth(true)
+                                ScrollContainer:AddChild(ExpansionHeading)
+                                HasVisiblePortals = true
+                            end
 
-                        local Toggle = AG:Create("CheckBox")
-                        Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
-                        Toggle:SetValue(activeTable[spellID] == true)
-                        Toggle:SetRelativeWidth(0.5)
-                        Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
-                        Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
-                        ScrollContainer:AddChild(Toggle)
+                            local Toggle = AG:Create("CheckBox")
+                            Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
+                            Toggle:SetValue(activeTable[spellID] == true)
+                            Toggle:SetRelativeWidth(0.5)
+                            Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
+                            Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
+                            ScrollContainer:AddChild(Toggle)
+                        end
                     end
+                end
+            else
+                for spellID in pairs(dataList) do
+                    local Toggle = AG:Create("CheckBox")
+                    Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
+                    Toggle:SetValue(activeTable[spellID] == true)
+                    Toggle:SetRelativeWidth(0.5)
+                    Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
+                    Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
+                    ScrollContainer:AddChild(Toggle)
                 end
             end
             return
@@ -146,6 +158,8 @@ function Portality:CreateGUI()
             CreateToggleList(GUIContainer, Portality.Data.Hearthstones, DB.Hearthstones, false)
         elseif TabGroup == "Wormholes" then
             CreateToggleList(GUIContainer, Portality.Data.Wormholes, DB.Wormholes, false)
+        elseif TabGroup == "Portals" then
+            CreateToggleList(GUIContainer, Portality.Data.Portals, DB.Portals, true)
         end
     end
 
@@ -155,6 +169,7 @@ function Portality:CreateGUI()
         { text = "Challenge Mode Portals", value = "ChallengeModePortals" },
         { text = "Hearthstones", value = "Hearthstones" },
         { text = "Wormholes", value = "Wormholes" },
+        { text = "Portals", value = "Portals" },
     })
     TabGroup:SetCallback("OnGroupSelected", SelectTabGroup)
     TabGroup:SetFullHeight(true)
@@ -253,7 +268,6 @@ function Portality:CreateOptions()
                     return args
                 end)(),
             },
-
             Hearthstones = {
                 type = "group",
                 name = "Hearthstones",
@@ -279,7 +293,6 @@ function Portality:CreateOptions()
                     return args
                 end)(),
             },
-
             Wormholes = {
                 type = "group",
                 name = "Wormholes",
@@ -305,6 +318,31 @@ function Portality:CreateOptions()
                     return args
                 end)(),
             },
+            Portals = {
+                type = "group",
+                name = "Portals",
+                order = 40,
+                args = (function()
+                    local args = {}
+                    local order = 1
+
+                    for spellID in pairs(Portality.Data.Portals) do
+                        args["portal_" .. spellID] = {
+                            type = "toggle",
+                            name = Portality:CreateDisplayName(spellID, true),
+                            order = order,
+                            width = "full",
+                            get = function() return DB.Portals[spellID] == true end,
+                            set = function(_, val) DB.Portals[spellID] = val Portality:GenerateDropdownData() end,
+                            disabled = function() return not Portality:IsLearnt(spellID, true) end,
+                            descStyle = "hidden"
+                        }
+                        order = order + 1
+                    end
+
+                    return args
+                end)(),
+            }
         },
     }
 

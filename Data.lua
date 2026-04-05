@@ -315,12 +315,46 @@ Portality.Data.WormholesByName = {
 	[248485] = "Quel'Thalas",
 }
 
+Portality.Data.Portals = {
+    [11417] = true,
+    [11418] = true,
+    [11420] = true,
+    [32267] = true,
+    [49361] = true,
+    [35717] = true,
+    [53142] = true,
+    [88346] = true,
+    [132626] = true,
+    [176244] = true,
+    [224871] = true,
+    [281402] = true,
+    [344597] = true,
+    [395289] = true
+}
+
+Portality.Data.PortalByName = {
+    [11417] = "Orgrimmar",
+    [11418] = "Undercity",
+    [11420] = "Thunder Bluff",
+    [32267] = "Silvermoon City - Burning Crusade",
+    [49361] = "Stonard",
+    [35717] = "Shattrath City",
+    [53142] = "Dalaran - Northrend",
+    [88346] = "Tol Barad",
+    [132626] = "Vale of Eternal Blossoms",
+    [176244] = "Warspear",
+    [224871] = "Dalaran - Broken Isles",
+    [281402] = "Dazar'alor",
+    [344597] = "Oribos",
+    [395289] = "Valdrakken"
+}
+
 function Portality:CreateDisplayName(spellID, isSpell)
     local spellColour = Portality:IsLearnt(spellID, isSpell) and "|cFFAACCDD" or "|cFFFF4040"
     if isSpell then
         local spellData = C_Spell.GetSpellInfo(spellID)
         if spellData then
-            local spellName = Portality.Data.ChallengeModePortalsByName[spellID] or spellData.name
+            local spellName = Portality.Data.ChallengeModePortalsByName[spellID] or Portality.Data.PortalByName[spellID] or spellData.name
             local spellTexture = spellData.iconID
             return string.format("|T%s:24:24|t %s%s|r", spellTexture, spellColour, spellName)
         end
@@ -357,6 +391,12 @@ function Portality:GenerateDropdownData()
     for spellID, isActive in pairs(Portality.DB.global.ChallengeModePortals) do
         if isActive and Portality:IsSpellUsable(spellID) then
             table.insert(DropdownData, { ID = spellID, name = Portality:CreateDisplayName(spellID, true), isSpell = true })
+        end
+    end
+
+    for portalID, isActive in pairs(Portality.DB.global.Portals) do
+        if isActive and Portality:IsSpellUsable(portalID) then
+            table.insert(DropdownData, { ID = portalID, name = Portality:CreateDisplayName(portalID, true), isSpell = true })
         end
     end
 

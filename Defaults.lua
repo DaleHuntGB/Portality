@@ -124,6 +124,22 @@ local Defaults = {
             [221966]    = false,
             [248485]    = false,
         },
+        Portals = {
+            [11417] = false,
+            [11418] = false,
+            [11420] = false,
+            [32267] = false,
+            [49361] = false,
+            [35717] = false,
+            [53142] = false,
+            [88346] = false,
+            [132626] = false,
+            [176244] = false,
+            [224871] = false,
+            [281402] = false,
+            [344597] = false,
+            [395289] = false
+        }
     }
 }
 
