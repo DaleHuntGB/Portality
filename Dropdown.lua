@@ -94,7 +94,6 @@ function Portality:CreateDropdownMenu()
     DisclaimerText:SetJustifyH("CENTER")
     DisclaimerText:Hide()
 
-
     Portality.DropdownMenu = DropdownMenu
     Portality.DropdownMenu.Buttons = {}
     Portality.DropdownMenu.DisclaimerText = DisclaimerText
