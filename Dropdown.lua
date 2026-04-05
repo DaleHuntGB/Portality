@@ -2,7 +2,7 @@ local _, Portality = ...
 
 local function CreatePortalButton(buttonName, spellData)
     local PortalButton = CreateFrame("Button", buttonName, Portality.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
-    PortalButton:SetSize(Portality.DropdownMenu:GetWidth() - 2, 32)
+    PortalButton:SetSize(Portality.DropdownMenu:GetWidth() - 4, 32)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     PortalButton:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
     PortalButton:SetBackdropBorderColor(0, 0, 0, 1)
@@ -23,8 +23,36 @@ local function CreatePortalButton(buttonName, spellData)
 
     local ButtonText = PortalButton:CreateFontString(nil, "OVERLAY")
     ButtonText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
-    ButtonText:SetPoint("CENTER", PortalButton, "CENTER", 0, -1)
+    ButtonText:SetPoint("LEFT", PortalButton, "LEFT", 3, 0)
     ButtonText:SetText(spellData.name)
+
+    local ButtonDuration = PortalButton:CreateFontString(nil, "OVERLAY")
+    ButtonDuration:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    ButtonDuration:SetPoint("RIGHT", PortalButton, "RIGHT", -3, 0)
+
+    if spellData.isSpell then
+        PortalButton:SetScript("OnUpdate", function(self, elapsed)
+            local spellCooldown = C_Spell.GetSpellCooldown(spellData.ID)
+            if spellCooldown and spellCooldown.startTime > 0 then
+                local remainingCooldown = spellCooldown.startTime + spellCooldown.duration - GetTime()
+                ButtonDuration:SetText(string.format("%02d:%02d", math.floor(remainingCooldown / 60), remainingCooldown % 60))
+            else
+                ButtonDuration:SetText("")
+                self:SetScript("OnUpdate", nil)
+            end
+        end)
+    else
+        PortalButton:SetScript("OnUpdate", function(self, elapsed)
+            local itemCooldownStart, itemCooldownDuration = C_Item.GetItemCooldown(spellData.ID)
+            if itemCooldownStart and itemCooldownStart > 0 then
+                local remainingCooldown = itemCooldownStart + itemCooldownDuration - GetTime()
+                ButtonDuration:SetText(string.format("%02d:%02d", math.floor(remainingCooldown / 60), remainingCooldown % 60))
+            else
+                ButtonDuration:SetText("")
+                self:SetScript("OnUpdate", nil)
+            end
+        end)
+    end
 
     return PortalButton
 end
@@ -47,14 +75,14 @@ function Portality:CreateDropdownMenu()
         local buttonName = "PortalityDropdownButton" .. index
         local PortalButton = CreatePortalButton(buttonName, spellData)
         if index == 1 then
-            PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -1)
+            PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -2)
         else
             PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
         end
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
 
-   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 1 or 1)
+   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 1)
 end
 
 function Portality:RefreshDropdownMenu()
@@ -70,14 +98,14 @@ function Portality:RefreshDropdownMenu()
         local buttonName = "PortalityDropdownButton" .. index
         local PortalButton = CreatePortalButton(buttonName, spellData)
         if index == 1 then
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu, "TOP", 0, -1)
+            PortalButton:SetPoint("TOP", Portality.DropdownMenu, "TOP", 0, -2)
         else
             PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
         end
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
 
-        Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 1 or 1)
+        Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 1)
     end
 
 function Portality:ToggleDropdownMenu()
