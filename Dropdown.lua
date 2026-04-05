@@ -92,13 +92,13 @@ function Portality:CreateDropdownMenu()
 
     Portality:GenerateDropdownData()
 
-    for index, spellData in ipairs(Portality.DropdownData) do
-        local buttonName = "PortalityDropdownButton" .. index
+    for spellIndex, spellData in ipairs(Portality.DropdownData) do
+        local buttonName = "PortalityDropdownButton" .. spellIndex
         local PortalButton = CreatePortalButton(buttonName, spellData)
-        if index == 1 then
+        if spellIndex == 1 then
             PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -2)
         else
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
+            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[spellIndex - 1], "BOTTOM", 0, -1)
         end
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
@@ -115,13 +115,13 @@ function Portality:RefreshDropdownMenu()
 
     Portality:GenerateDropdownData()
 
-    for index, spellData in ipairs(Portality.DropdownData) do
-        local buttonName = "PortalityDropdownButton" .. index
+    for spellIndex, spellData in ipairs(Portality.DropdownData) do
+        local buttonName = "PortalityDropdownButton" .. spellIndex
         local PortalButton = CreatePortalButton(buttonName, spellData)
-        if index == 1 then
+        if spellIndex == 1 then
             PortalButton:SetPoint("TOP", Portality.DropdownMenu, "TOP", 0, -2)
         else
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
+            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[spellIndex - 1], "BOTTOM", 0, -1)
         end
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
