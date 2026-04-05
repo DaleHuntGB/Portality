@@ -108,6 +108,22 @@ local Defaults = {
             [140192]    = false,
             [110560]    = false,
         },
+        Wormholes = {
+            [18984]     = false,
+            [18986]     = false,
+            [30542]     = false,
+            [30544]     = false,
+            [48933]     = false,
+            [87215]     = false,
+            [112059]    = false,
+            [151652]    = false,
+            [168807]    = false,
+            [168808]    = false,
+            [172924]    = false,
+            [198156]    = false,
+            [221966]    = false,
+            [248485]    = false,
+        },
     }
 }
 

@@ -281,6 +281,40 @@ Portality.Data.Hearthstones = {
     [110560] = true,
 }
 
+Portality.Data.Wormholes = {
+    [18984] = true,
+	[18986] = true,
+	[30542] = true,
+	[30544] = true,
+	[48933] = true,
+	[87215] = true,
+	[112059] = true,
+	[151652] = true,
+	[168807] = true,
+	[168808] = true,
+	[172924] = true,
+	[198156] = true,
+	[221966] = true,
+	[248485] = true,
+}
+
+Portality.Data.WormholesByName = {
+    [18984] = "Everlook",
+	[18986] = "Gadgetzan",
+	[30542] = "Area 52",
+	[30544] = "Blade's Edge",
+	[48933] = "Northrend",
+	[87215] = "Pandaria",
+	[112059] = "Draenor",
+	[151652] = "Argus",
+	[168807] = "Kul Tiras",
+	[168808] = "Zandalar",
+	[172924] = "Shadowlands",
+	[198156] = "Dragon Isles",
+	[221966] = "Khaz Algar",
+	[248485] = "Quel'Thalas",
+}
+
 function Portality:CreateDisplayName(spellID, isSpell)
     local spellColour = Portality:IsLearnt(spellID, isSpell) and "|cFFAACCDD" or "|cFFFF4040"
     if isSpell then
@@ -291,7 +325,7 @@ function Portality:CreateDisplayName(spellID, isSpell)
             return string.format("|T%s:24:24|t %s%s|r", spellTexture, spellColour, spellName)
         end
     else
-        local itemName = select(1, C_Item.GetItemInfo(spellID))
+        local itemName = Portality.Data.WormholesByName[spellID] or select(1, C_Item.GetItemInfo(spellID))
         local itemTexture = select(10, C_Item.GetItemInfo(spellID))
         if itemName and itemTexture then
             return string.format("|T%s:24:24|t %s%s|r", itemTexture, spellColour, itemName)
@@ -307,34 +341,34 @@ function Portality:IsLearnt(spellID, isSpell)
     end
 end
 
-function Portality:IsAvailableChallengeModePortal(spellID)
-    for _, expansionPortals in ipairs(Portality.Data.ChallengeModePortals) do
-        if expansionPortals[spellID] ~= nil then
-            return expansionPortals[spellID] == true
-        end
-    end
-
-    return false
+function Portality:IsSpellUsable(spellID)
+    local isUsable = C_Spell.IsSpellUsable(spellID)
+    return isUsable
 end
 
-function Portality:FetchData(spellID, isSpell)
-    if isSpell then
-        return C_Spell.GetSpellDescription(spellID)
-    else
-        return
-    end
+function Portality:IsItemUsable(itemID)
+    local isUsable = C_ToyBox.IsToyUsable(itemID)
+    return isUsable
 end
 
 function Portality:GenerateDropdownData()
     local DropdownData = {}
+
     for spellID, isActive in pairs(Portality.DB.global.ChallengeModePortals) do
-        if isActive and Portality:IsAvailableChallengeModePortal(spellID) then
+        if isActive and Portality:IsSpellUsable(spellID) then
             table.insert(DropdownData, { ID = spellID, name = Portality:CreateDisplayName(spellID, true), isSpell = true })
         end
     end
+
     for itemID, isActive in pairs(Portality.DB.global.Hearthstones) do
-        if isActive then
+        if isActive and Portality:IsItemUsable(itemID) then
             table.insert(DropdownData, { ID = itemID, name = Portality:CreateDisplayName(itemID, false), isSpell = false })
+        end
+    end
+
+    for wormholeID, isActive in pairs(Portality.DB.global.Wormholes) do
+        if isActive and Portality:IsItemUsable(wormholeID) then
+            table.insert(DropdownData, { ID = wormholeID, name = Portality:CreateDisplayName(wormholeID, false), isSpell = false })
         end
     end
 

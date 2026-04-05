@@ -8,7 +8,7 @@ function Portality:CreateGUI()
     if isGUIOpen then return end
     isGUIOpen = true
     GUIFrame = AG:Create("Frame")
-    GUIFrame:SetTitle("|cFF8080FFPortality|r")
+    GUIFrame:SetTitle("|A:dungeon:18:18|a|cFF8080FFPortality|r")
     GUIFrame:SetStatusText("Set Dropdown Keybind in Keybindings Menu")
     GUIFrame:SetLayout("Flow")
     GUIFrame:SetWidth(800)
@@ -99,11 +99,6 @@ function Portality:CreateGUI()
         ScrollContainer:SetFullHeight(true)
         parent:AddChild(ScrollContainer)
 
-        local InlineGroup = AG:Create("InlineGroup")
-        InlineGroup:SetLayout("Flow")
-        InlineGroup:SetFullWidth(true)
-        ScrollContainer:AddChild(InlineGroup)
-
         if isSpell then
             for _, expansionPortals in ipairs(dataList) do
                 local HasVisiblePortals = false
@@ -113,7 +108,7 @@ function Portality:CreateGUI()
                             local ExpansionHeading = AG:Create("Heading")
                             ExpansionHeading:SetText(Portality.Data.ChallengeModePortalsByExpansion[expansionPortals])
                             ExpansionHeading:SetFullWidth(true)
-                            InlineGroup:AddChild(ExpansionHeading)
+                            ScrollContainer:AddChild(ExpansionHeading)
                             HasVisiblePortals = true
                         end
 
@@ -123,7 +118,7 @@ function Portality:CreateGUI()
                         Toggle:SetRelativeWidth(0.5)
                         Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
                         Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
-                        InlineGroup:AddChild(Toggle)
+                        ScrollContainer:AddChild(Toggle)
                     end
                 end
             end
@@ -137,7 +132,7 @@ function Portality:CreateGUI()
             Toggle:SetRelativeWidth(0.5)
             Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[itemID] = value Portality:GenerateDropdownData() end)
             Toggle:SetDisabled(not Portality:IsLearnt(itemID, isSpell))
-            InlineGroup:AddChild(Toggle)
+            ScrollContainer:AddChild(Toggle)
         end
     end
 
@@ -147,6 +142,8 @@ function Portality:CreateGUI()
             CreateToggleList(GUIContainer, Portality.Data.ChallengeModePortals, DB.ChallengeModePortals, true)
         elseif TabGroup == "Hearthstones" then
             CreateToggleList(GUIContainer, Portality.Data.Hearthstones, DB.Hearthstones, false)
+        elseif TabGroup == "Wormholes" then
+            CreateToggleList(GUIContainer, Portality.Data.Wormholes, DB.Wormholes, false)
         end
     end
 
@@ -155,6 +152,7 @@ function Portality:CreateGUI()
     TabGroup:SetTabs({
         { text = "Challenge Mode Portals", value = "ChallengeModePortals" },
         { text = "Hearthstones", value = "Hearthstones" },
+        { text = "Wormholes", value = "Wormholes" },
     })
     TabGroup:SetCallback("OnGroupSelected", SelectTabGroup)
     TabGroup:SetFullHeight(true)
