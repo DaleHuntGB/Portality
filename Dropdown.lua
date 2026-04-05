@@ -87,8 +87,17 @@ function Portality:CreateDropdownMenu()
     DropdownMenu:SetBackdropBorderColor(0, 0, 0, 1)
     DropdownMenu:Hide()
 
+    local DisclaimerText = DropdownMenu:CreateFontString(nil, "OVERLAY")
+    DisclaimerText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    DisclaimerText:SetPoint("CENTER", DropdownMenu, "CENTER", 0, 0)
+    DisclaimerText:SetText("|cFFCCCCCCNo Portals Chosen or Available!|r")
+    DisclaimerText:SetJustifyH("CENTER")
+    DisclaimerText:Hide()
+
+
     Portality.DropdownMenu = DropdownMenu
     Portality.DropdownMenu.Buttons = {}
+    Portality.DropdownMenu.DisclaimerText = DisclaimerText
 
     Portality:GenerateDropdownData()
 
@@ -103,7 +112,12 @@ function Portality:CreateDropdownMenu()
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
 
-   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 1)
+   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 32)
+   if #Portality.DropdownMenu.Buttons == 0 then
+        Portality.DropdownMenu.DisclaimerText:Show()
+    else
+        Portality.DropdownMenu.DisclaimerText:Hide()
+    end
 end
 
 function Portality:RefreshDropdownMenu()
@@ -126,8 +140,13 @@ function Portality:RefreshDropdownMenu()
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
 
-        Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 1)
+    Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 32)
+    if #Portality.DropdownMenu.Buttons == 0 then
+        Portality.DropdownMenu.DisclaimerText:Show()
+    else
+        Portality.DropdownMenu.DisclaimerText:Hide()
     end
+end
 
 function Portality:ToggleDropdownMenu()
     if not Portality.DropdownMenu then Portality:CreateDropdownMenu() end

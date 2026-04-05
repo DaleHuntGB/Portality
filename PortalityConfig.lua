@@ -9,6 +9,7 @@ function Portality:CreateGUI()
     isGUIOpen = true
     GUIFrame = AG:Create("Frame")
     GUIFrame:SetTitle("|cFF8080FFPortality|r")
+    GUIFrame:SetStatusText("Set Dropdown Keybind in Keybindings Menu")
     GUIFrame:SetLayout("Flow")
     GUIFrame:SetWidth(800)
     GUIFrame:SetHeight(600)
