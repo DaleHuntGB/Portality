@@ -1,22 +1,5 @@
 local _, Portality = ...
 
-function Portality:UsePortal(spellID)
-    local spellData = Portality.DropdownData[spellID]
-    if not spellData then return end
-
-    local button = Portality.secureButton
-
-    if spellData.isSpell then
-        button:SetAttribute("type", "spell")
-        button:SetAttribute("spell", spellID)
-    else
-        button:SetAttribute("type", "item")
-        button:SetAttribute("item", "item:" .. spellID)
-    end
-
-    button:Click()
-end
-
 local function CreatePortalButton(buttonName, spellData)
     local PortalButton = CreateFrame("Button", buttonName, Portality.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
     PortalButton:SetSize(Portality.DropdownMenu:GetWidth() - 6, 32)
