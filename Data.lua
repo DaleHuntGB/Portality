@@ -3,6 +3,16 @@ local _, Portality = ...
 Portality.Data = {}
 
 Portality.Data.ChallengeModePortals = {
+    {
+        [1254400]   = true, -- Windrunner Spire
+        [1254572]   = true, -- Magisters' Terrace
+        [1254559]   = true, -- Maisara Caverns
+        [1254563]   = true, -- Nexus-Point Xenas
+        [393273]    = true, -- Algeth'ar Academy
+        [1254551]   = true, -- Seat of the Triumvirate
+        [159898]    = true, -- Skyreach
+        [1254555]   = true, -- Pit of Saron
+    },
     -- Midnight
     {
         [1254400] = true, -- Windrunner Spire
@@ -57,8 +67,8 @@ Portality.Data.ChallengeModePortals = {
         [410071] = true, -- Freehold
         --[1762] = , -- King's Rest
         --[1864] = , -- Shrine of the Storm
-        [445418] = true, -- Siege of Boralus (Alliance)
-        [464256] = true, -- Siege of Boralus (Horde)
+        [445418] = UnitFactionGroup("player") == "Alliance", -- Siege of Boralus (Alliance)
+        [464256] = UnitFactionGroup("player") == "Horde", -- Siege of Boralus (Horde)
         --[1771] = , -- Tol Dagor
         [410074] = true, -- The Underrot
         [424167] = true, -- Waycrest Manor
@@ -139,6 +149,101 @@ Portality.Data.ChallengeModePortals = {
     },
 }
 
+Portality.Data.ChallengeModePortalsByExpansion = {
+    [Portality.Data.ChallengeModePortals[1]] = "Season 01", -- Current
+    [Portality.Data.ChallengeModePortals[2]] = "Midnight", -- Midnight
+    [Portality.Data.ChallengeModePortals[3]] = "The War Within", -- The War Within
+    [Portality.Data.ChallengeModePortals[4]] = "Dragonflight", -- Dragonflight
+    [Portality.Data.ChallengeModePortals[5]] = "Shadowlands", -- Shadowlands
+    [Portality.Data.ChallengeModePortals[6]] = "Battle for Azeroth", -- Battle for Azeroth
+    [Portality.Data.ChallengeModePortals[7]] = "Legion", -- Legion
+    [Portality.Data.ChallengeModePortals[8]] = "Warlords of Draenor", -- Warlords of Draenor
+    [Portality.Data.ChallengeModePortals[9]] = "Mists of Pandaria", -- Mists of Pandaria
+    [Portality.Data.ChallengeModePortals[10]] = "Cataclysm", -- Cataclysm
+    [Portality.Data.ChallengeModePortals[11]] = "Wrath of the Lich King", -- Wrath of the Lich King
+}
+
+Portality.Data.ChallengeModePortalsByName = {
+    [1254400] = "Windrunner Spire",
+    [1254572] = "Magisters' Terrace",
+    [1254559] = "Maisara Caverns",
+    [1254563] = "Nexus-Point Xenas",
+    [445443] = "The Rookery",
+    [445444] = "Priory of the Sacred Flame",
+    [445441] = "Darkflame Cleft",
+    [445269] = "The Stonevault",
+    [445417] = "Ara-Kara, City of Echoes",
+    [445418] = "Siege of Boralus (Alliance)",
+    [464256] = "Siege of Boralus (Horde)",
+    [445414] = "The Dawnbreaker",
+    [445416] = "City of Threads",
+    [1216786] = "Operation: Floodgate",
+    [1237215] = "Eco-Dome Al'dani",
+    [393222] = "Uldaman: Legacy of Tyr",
+    [393279] = "The Azure Vault",
+    [393262] = "The Nokhud Offensive",
+    [393276] = "Neltharus",
+    [393267] = "Brackenhide Hollow",
+    [393256] = "Ruby Life Pools",
+    [393273] = "Algeth'ar Academy",
+    [393283] = "Halls of Infusion",
+    [424197] = "Dawn of the Infinite",
+    [354469] = "Sanguine Depths",
+    [354466] = "Spires of Ascension",
+    [354462] = "The Necrotic Wake",
+    [354465] = "Halls of Atonement",
+    [354463] = "Plaguefall",
+    [354464] = "Mists of Tirna Scithe",
+    [354468] = "De Other Side",
+    [354467] = "Theater of Pain",
+    [367416] = "Tazavesh, the Veiled Market",
+    [424187] = "Atal'Dazar",
+    [410071] = "Freehold",
+    [410074] = "The Underrot",
+    [424167] = "Waycrest Manor",
+    [373274] = "Operation: Mechagon",
+    [393766] = "Court of Stars",
+    [373262] = "Return to Karazhan",
+    [424153] = "Black Rook Hold",
+    [424163] = "Darkheart Thicket",
+    [410078] = "Neltharion's Lair",
+    [393764] = "Halls of Valor",
+    [1254551] = "Seat of the Triumvirate",
+    [159898] = "Skyreach",
+    [159899] = "Shadowmoon Burial Grounds",
+    [159900] = "Grimrail Depot",
+    [159901] = "The Everbloom",
+    [159896] = "Iron Docks",
+    [159897] = "Auchindoun",
+    [159895] = "Bloodmaul Slag Mines",
+    [159902] = "Upper Blackrock Spire",
+    [131206] = "Shado-Pan Monastery",
+    [131204] = "Temple of the Jade Serpent",
+    [131205] = "Stormstout Brewery",
+    [131225] = "Gate of the Setting Sun",
+    [131222] = "Mogu'shan Palace",
+    [131231] = "Scarlet Halls",
+    [131232] = "Scholomance",
+    [131228] = "Siege of Niuzao Temple",
+    [131229] = "Scarlet Monastery",
+    [424142] = "Throne of the Tides",
+    [410080] = "The Vortex Pinnacle",
+    [445424] = "Grim Batol",
+    [1254555] = "Pit of Saron",
+    [445440] = "Cinderbrew Meadery",
+}
+
+Portality.Data.CurrentSeason = {
+    [1254400] = "Windrunner Spire",
+    [1254572] = "Magisters' Terrace",
+    [1254559] = "Maisara Caverns",
+    [1254563] = "Nexus-Point Xenas",
+    [393273] = "Algeth'ar Academy",
+    [1254551] = "Seat of the Triumvirate",
+    [159898] = "Skyreach",
+    [1254555] = "Pit of Saron",
+}
+
 Portality.Data.Hearthstones = {
 	[54452] = true,
 	[64488] = true,
@@ -177,18 +282,19 @@ Portality.Data.Hearthstones = {
 }
 
 function Portality:CreateDisplayName(spellID, isSpell)
+    local spellColour = Portality:IsLearnt(spellID, isSpell) and "|cFFAACCDD" or "|cFFFF4040"
     if isSpell then
         local spellData = C_Spell.GetSpellInfo(spellID)
         if spellData then
-            local spellName = spellData.name
+            local spellName = Portality.Data.ChallengeModePortalsByName[spellID] or spellData.name
             local spellTexture = spellData.iconID
-            return string.format("|T%s:24:24|t %s", spellTexture, spellName)
+            return string.format("|T%s:24:24|t %s%s|r", spellTexture, spellColour, spellName)
         end
     else
         local itemName = select(1, C_Item.GetItemInfo(spellID))
         local itemTexture = select(10, C_Item.GetItemInfo(spellID))
         if itemName and itemTexture then
-            return string.format("|T%s:24:24|t %s", itemTexture, itemName)
+            return string.format("|T%s:24:24|t %s%s|r", itemTexture, spellColour, itemName)
         end
     end
 end
@@ -201,10 +307,28 @@ function Portality:IsLearnt(spellID, isSpell)
     end
 end
 
+function Portality:IsAvailableChallengeModePortal(spellID)
+    for _, expansionPortals in ipairs(Portality.Data.ChallengeModePortals) do
+        if expansionPortals[spellID] ~= nil then
+            return expansionPortals[spellID] == true
+        end
+    end
+
+    return false
+end
+
+function Portality:FetchData(spellID, isSpell)
+    if isSpell then
+        return C_Spell.GetSpellDescription(spellID)
+    else
+        return
+    end
+end
+
 function Portality:GenerateDropdownData()
     local DropdownData = {}
     for spellID, isActive in pairs(Portality.DB.global.ChallengeModePortals) do
-        if isActive then
+        if isActive and Portality:IsAvailableChallengeModePortal(spellID) then
             DropdownData[spellID] = Portality:CreateDisplayName(spellID, true)
         end
     end

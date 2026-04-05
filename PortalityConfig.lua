@@ -25,14 +25,25 @@ function Portality:CreateGUI()
 
         if isSpell then
             for _, expansionPortals in ipairs(dataList) do
-                for spellID in pairs(expansionPortals) do
-                    local Toggle = AG:Create("CheckBox")
-                    Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
-                    Toggle:SetValue(activeTable[spellID] == true)
-                    Toggle:SetRelativeWidth(0.5)
-                    Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
-                    Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
-                    ScrollContainer:AddChild(Toggle)
+                local HasVisiblePortals = false
+                for spellID, isAvailable in pairs(expansionPortals) do
+                    if isAvailable then
+                        if not HasVisiblePortals then
+                            local ExpansionHeading = AG:Create("Heading")
+                            ExpansionHeading:SetText(Portality.Data.ChallengeModePortalsByExpansion[expansionPortals])
+                            ExpansionHeading:SetFullWidth(true)
+                            ScrollContainer:AddChild(ExpansionHeading)
+                            HasVisiblePortals = true
+                        end
+
+                        local Toggle = AG:Create("CheckBox")
+                        Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
+                        Toggle:SetValue(activeTable[spellID] == true)
+                        Toggle:SetRelativeWidth(0.5)
+                        Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
+                        Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
+                        ScrollContainer:AddChild(Toggle)
+                    end
                 end
             end
             return
