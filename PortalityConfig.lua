@@ -23,40 +23,63 @@ function Portality:CreateGUI()
     KeybindContainer:SetFullWidth(true)
     GUIFrame:AddChild(KeybindContainer)
 
+    Portality.ActiveKeybind = nil
+
     local keybindButton = AG:Create("Button")
-    keybindButton:SetText("Set Keybind")
-    keybindButton:SetFullWidth(true)
-    keybindButton:SetText((GetBindingKey("PORTALITY_OPEN") and GetBindingKey("PORTALITY_OPEN") or "None"))
-    keybindButton:SetCallback("OnClick", function() Portality.KeybindCaptureFrame:Show() end)
+    keybindButton:SetRelativeWidth(0.5)
+    keybindButton:SetText(select(1, GetBindingKey("PORTALITY_OPEN")) or "None")
+    keybindButton:SetCallback("OnClick", function() Portality.ActiveKeybind = 1 Portality.KeybindCaptureFrame:Show() end)
     KeybindContainer:AddChild(keybindButton)
+
+    local keybindButtonTwo = AG:Create("Button")
+    keybindButtonTwo:SetRelativeWidth(0.5)
+    keybindButtonTwo:SetText(select(2, GetBindingKey("PORTALITY_OPEN")) or "None")
+    keybindButtonTwo:SetCallback("OnClick", function() Portality.ActiveKeybind = 2 Portality.KeybindCaptureFrame:Show() end)
+    KeybindContainer:AddChild(keybindButtonTwo)
 
     if not Portality.KeybindCaptureFrame then
         local keybindCaptureFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
         keybindCaptureFrame:SetSize(300, 48)
         keybindCaptureFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-        keybindCaptureFrame:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
+        keybindCaptureFrame:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1 })
         keybindCaptureFrame:SetBackdropColor(0, 0, 0, 0.8)
         keybindCaptureFrame:SetBackdropBorderColor(0, 0, 0, 1)
         keybindCaptureFrame:EnableKeyboard(true)
         keybindCaptureFrame:SetPropagateKeyboardInput(false)
+
         keybindCaptureFrame:SetScript("OnKeyDown", function(_, key)
             if key == "LSHIFT" or key == "RSHIFT" or key == "LCTRL" or key == "RCTRL" or key == "LALT" or key == "RALT" then return end
 
-            if key == "ESCAPE" then
-                local existing = GetBindingKey("PORTALITY_OPEN")
-                if existing then SetBinding(existing, nil) end
-            else
-                local keyCombo = key
+            local KeybindA, KeybindB = GetBindingKey("PORTALITY_OPEN")
+            local activeKeybind = Portality.ActiveKeybind
+            if not activeKeybind then return end
+
+            local keyCombo
+            if key ~= "ESCAPE" then
+                keyCombo = key
                 if IsShiftKeyDown() then keyCombo = "SHIFT-" .. keyCombo end
                 if IsControlKeyDown() then keyCombo = "CTRL-" .. keyCombo end
                 if IsAltKeyDown() then keyCombo = "ALT-" .. keyCombo end
-                SetBinding(keyCombo, "PORTALITY_OPEN")
+            end
+
+            if activeKeybind == 1 then
+                if KeybindA then SetBinding(KeybindA, nil) end
+                if key ~= "ESCAPE" then SetBinding(keyCombo, "PORTALITY_OPEN") end
+            elseif activeKeybind == 2 then
+                if KeybindB then SetBinding(KeybindB, nil) end
+                if key ~= "ESCAPE" then SetBinding(keyCombo, "PORTALITY_OPEN") end
             end
 
             SaveBindings(GetCurrentBindingSet())
             keybindCaptureFrame:Hide()
         end)
-        keybindCaptureFrame:SetScript("OnHide", function() keybindButton:SetText((GetBindingKey("PORTALITY_OPEN") and GetBindingKey("PORTALITY_OPEN") or "None")) end)
+
+        keybindCaptureFrame:SetScript("OnHide", function()
+            local KeybindA, KeybindB = GetBindingKey("PORTALITY_OPEN")
+            keybindButton:SetText(KeybindA or "None")
+            keybindButtonTwo:SetText(KeybindB or "None")
+            Portality.ActiveKeybind = nil
+        end)
 
         keybindCaptureFrame:Hide()
 
