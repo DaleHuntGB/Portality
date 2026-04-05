@@ -1,0 +1,10 @@
+## Title: |cFF8080FFPortality|r
+## Interface: 120000
+## SavedVariables: PortalityDB
+## IconAtlas: dungeon
+## Category-enUS: |cFF8080FFUnhalted|r Development
+
+Data.lua
+Defaults.lua
+PortalityConfig.lua
+Portality.lua
