@@ -2,7 +2,7 @@ local _, Portality = ...
 
 local function CreatePortalButton(buttonName, spellData)
     local PortalButton = CreateFrame("Button", buttonName, Portality.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
-    PortalButton:SetSize(Portality.DropdownMenu:GetWidth() - 6, 32)
+    PortalButton:SetSize(Portality.DropdownMenu:GetWidth() - 2, 32)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     PortalButton:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
     PortalButton:SetBackdropBorderColor(0, 0, 0, 1)
@@ -47,14 +47,14 @@ function Portality:CreateDropdownMenu()
         local buttonName = "PortalityDropdownButton" .. index
         local PortalButton = CreatePortalButton(buttonName, spellData)
         if index == 1 then
-            PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -3)
+            PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -1)
         else
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -3)
+            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
         end
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
 
-   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 35 + 3 or 1)
+   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 1 or 1)
 end
 
 function Portality:RefreshDropdownMenu()
@@ -70,15 +70,15 @@ function Portality:RefreshDropdownMenu()
         local buttonName = "PortalityDropdownButton" .. index
         local PortalButton = CreatePortalButton(buttonName, spellData)
         if index == 1 then
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu, "TOP", 0, -3)
+            PortalButton:SetPoint("TOP", Portality.DropdownMenu, "TOP", 0, -1)
         else
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -3)
+            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
         end
         table.insert(Portality.DropdownMenu.Buttons, PortalButton)
     end
 
-    Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 35 + 3 or 1)
-end
+        Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 1 or 1)
+    end
 
 function Portality:ToggleDropdownMenu()
     if not Portality.DropdownMenu then Portality:CreateDropdownMenu() end

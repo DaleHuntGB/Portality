@@ -337,5 +337,8 @@ function Portality:GenerateDropdownData()
             table.insert(DropdownData, { ID = itemID, name = Portality:CreateDisplayName(itemID, false), isSpell = false })
         end
     end
+
+    table.sort(DropdownData, function(a, b) if a.isSpell ~= b.isSpell then return not a.isSpell end return a.name < b.name end)
+
     Portality.DropdownData = DropdownData
 end
