@@ -33,7 +33,7 @@ local function CreatePortalButton(buttonName, spellData)
 
     PortalButton.ButtonDurationStatusBar = ButtonDurationStatusBar
 
-    local ButtonIcon = ButtonDurationStatusBar:CreateTexture(nil, "ARTWORK")
+    local ButtonIcon = ButtonDurationStatusBar:CreateTexture(nil, "OVERLAY")
     ButtonIcon:SetPoint("LEFT", PortalButton, "LEFT", 2, 0)
     ButtonIcon:SetSize(DB.Height - 4, DB.Height - 4)
     if spellData.isSpell then
