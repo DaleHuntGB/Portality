@@ -77,12 +77,16 @@ local function CreatePortalButton(buttonName, spellData)
 end
 
 function Portalist:CreateDropdownMenu()
+    if InCombatLockdown() then return end
     local DropdownMenu = CreateFrame("Frame", "PortalistDropdownMenu", UIParent, "BackdropTemplate")
     DropdownMenu:SetSize(400, 1)
     DropdownMenu:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     DropdownMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     DropdownMenu:SetBackdropColor(0, 0, 0, 0.8)
     DropdownMenu:SetBackdropBorderColor(0, 0, 0, 1)
+    DropdownMenu:RegisterEvent("PLAYER_REGEN_DISABLED")
+    DropdownMenu:RegisterEvent("ENCOUNTER_START")
+    DropdownMenu:SetScript("OnEvent", function(_, event) if event == "PLAYER_REGEN_DISABLED" or event == "ENCOUNTER_START" and DropdownMenu:IsShown() then DropdownMenu:Hide() end end)
     DropdownMenu:Hide()
 
     local DisclaimerText = DropdownMenu:CreateFontString(nil, "OVERLAY")
@@ -131,14 +135,11 @@ function Portalist:CreateDropdownMenu()
 end
 
 function Portalist:RefreshDropdownMenu()
+    if InCombatLockdown() then return end
     if not Portalist.DropdownMenu then return end
-
     for _, portalButton in ipairs(Portalist.DropdownMenu.Buttons or {}) do portalButton:Hide() portalButton:SetParent(nil) end
-
     Portalist.DropdownMenu.Buttons = {}
-
     Portalist:GenerateDropdownData()
-
     for spellIndex, spellData in ipairs(Portalist.DropdownData) do
         local buttonName = "PortalistDropdownButton" .. spellIndex
         local PortalButton = CreatePortalButton(buttonName, spellData)
@@ -149,16 +150,12 @@ function Portalist:RefreshDropdownMenu()
         end
         table.insert(Portalist.DropdownMenu.Buttons, PortalButton)
     end
-
     Portalist.DropdownMenu:SetHeight(#Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * 33 + 3 or 32)
-    if #Portalist.DropdownMenu.Buttons == 0 then
-        Portalist.DropdownMenu.DisclaimerText:Show()
-    else
-        Portalist.DropdownMenu.DisclaimerText:Hide()
-    end
+    if #Portalist.DropdownMenu.Buttons == 0 then Portalist.DropdownMenu.DisclaimerText:Show() else Portalist.DropdownMenu.DisclaimerText:Hide() end
 end
 
 function Portalist:ToggleDropdownMenu()
+    if InCombatLockdown() then return end
     if not Portalist.DropdownMenu then Portalist:CreateDropdownMenu() end
     if Portalist.DropdownMenu:IsShown() then
         Portalist.DropdownMenu:Hide()
@@ -167,7 +164,6 @@ function Portalist:ToggleDropdownMenu()
         Portalist:RefreshDropdownMenu()
         Portalist.DropdownMenuController:Show()
         Portalist.DropdownMenu:Show()
-
         local cursorX, cursorY = GetCursorPosition()
         local cursorScale = Portalist.DropdownMenu:GetEffectiveScale()
         Portalist.DropdownMenu:ClearAllPoints()
