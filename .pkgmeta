@@ -1,4 +1,4 @@
-package-as: Portality
+package-as: Portalist
 enable-nolib-creation: yes
 
 curse-id:

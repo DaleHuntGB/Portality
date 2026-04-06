@@ -1,5 +1,5 @@
 <Bindings>
-    <Binding name="PORTALITY_OPEN" category="|cFF8080FFPortality|r">
-        Portality_DropdownMenu()
+    <Binding name="PORTALITY_OPEN" category="|cFF8080FFPortalist|r">
+        Portalist_DropdownMenu()
     </Binding>
 </Bindings>

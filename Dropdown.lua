@@ -1,8 +1,8 @@
-local _, Portality = ...
+local _, Portalist = ...
 
 local function CreatePortalButton(buttonName, spellData)
-    local PortalButton = CreateFrame("Button", buttonName, Portality.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
-    PortalButton:SetSize(Portality.DropdownMenu:GetWidth() - 4, 32)
+    local PortalButton = CreateFrame("Button", buttonName, Portalist.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
+    PortalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, 32)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     PortalButton:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
     PortalButton:SetBackdropBorderColor(0, 0, 0, 1)
@@ -19,7 +19,7 @@ local function CreatePortalButton(buttonName, spellData)
         PortalButton:SetAttribute("item", "item:" .. spellData.ID)
     end
 
-    PortalButton:SetScript("PostClick", function() Portality.DropdownMenu:Hide() end)
+    PortalButton:SetScript("PostClick", function() Portalist.DropdownMenu:Hide() end)
 
     local ButtonDurationStatusBar = CreateFrame("StatusBar", nil, PortalButton)
     ButtonDurationStatusBar:SetPoint("TOPLEFT", PortalButton, "TOPLEFT", 1, -1)
@@ -76,8 +76,8 @@ local function CreatePortalButton(buttonName, spellData)
     return PortalButton
 end
 
-function Portality:CreateDropdownMenu()
-    local DropdownMenu = CreateFrame("Frame", "PortalityDropdownMenu", UIParent, "BackdropTemplate")
+function Portalist:CreateDropdownMenu()
+    local DropdownMenu = CreateFrame("Frame", "PortalistDropdownMenu", UIParent, "BackdropTemplate")
     DropdownMenu:SetSize(400, 1)
     DropdownMenu:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     DropdownMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
@@ -92,72 +92,72 @@ function Portality:CreateDropdownMenu()
     DisclaimerText:SetJustifyH("CENTER")
     DisclaimerText:Hide()
 
-    Portality.DropdownMenu = DropdownMenu
-    Portality.DropdownMenu.Buttons = {}
-    Portality.DropdownMenu.DisclaimerText = DisclaimerText
+    Portalist.DropdownMenu = DropdownMenu
+    Portalist.DropdownMenu.Buttons = {}
+    Portalist.DropdownMenu.DisclaimerText = DisclaimerText
 
-    Portality:GenerateDropdownData()
+    Portalist:GenerateDropdownData()
 
-    for spellIndex, spellData in ipairs(Portality.DropdownData) do
+    for spellIndex, spellData in ipairs(Portalist.DropdownData) do
         local isUsable = false;
-        if spellData.isSpell then isUsable = Portality:IsSpellUsable(spellData.ID) else isUsable = Portality:IsItemUsable(spellData.ID) end
+        if spellData.isSpell then isUsable = Portalist:IsSpellUsable(spellData.ID) else isUsable = Portalist:IsItemUsable(spellData.ID) end
         if isUsable then
-            local buttonName = "PortalityDropdownButton" .. spellIndex
+            local buttonName = "PortalistDropdownButton" .. spellIndex
             local PortalButton = CreatePortalButton(buttonName, spellData)
             if spellIndex == 1 then
                 PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -2)
             else
-                PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[spellIndex - 1], "BOTTOM", 0, -1)
+                PortalButton:SetPoint("TOP", Portalist.DropdownMenu.Buttons[spellIndex - 1], "BOTTOM", 0, -1)
             end
-            table.insert(Portality.DropdownMenu.Buttons, PortalButton)
+            table.insert(Portalist.DropdownMenu.Buttons, PortalButton)
         end
     end
 
-   DropdownMenu:SetSize(400, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 32)
-   if #Portality.DropdownMenu.Buttons == 0 then
-        Portality.DropdownMenu.DisclaimerText:Show()
+   DropdownMenu:SetSize(400, #Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * 33 + 3 or 32)
+   if #Portalist.DropdownMenu.Buttons == 0 then
+        Portalist.DropdownMenu.DisclaimerText:Show()
     else
-        Portality.DropdownMenu.DisclaimerText:Hide()
+        Portalist.DropdownMenu.DisclaimerText:Hide()
     end
 end
 
-function Portality:RefreshDropdownMenu()
-    if not Portality.DropdownMenu then return end
+function Portalist:RefreshDropdownMenu()
+    if not Portalist.DropdownMenu then return end
 
-    for _, portalButton in ipairs(Portality.DropdownMenu.Buttons or {}) do portalButton:Hide() portalButton:SetParent(nil) end
+    for _, portalButton in ipairs(Portalist.DropdownMenu.Buttons or {}) do portalButton:Hide() portalButton:SetParent(nil) end
 
-    Portality.DropdownMenu.Buttons = {}
+    Portalist.DropdownMenu.Buttons = {}
 
-    Portality:GenerateDropdownData()
+    Portalist:GenerateDropdownData()
 
-    for spellIndex, spellData in ipairs(Portality.DropdownData) do
-        local buttonName = "PortalityDropdownButton" .. spellIndex
+    for spellIndex, spellData in ipairs(Portalist.DropdownData) do
+        local buttonName = "PortalistDropdownButton" .. spellIndex
         local PortalButton = CreatePortalButton(buttonName, spellData)
         if spellIndex == 1 then
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu, "TOP", 0, -2)
+            PortalButton:SetPoint("TOP", Portalist.DropdownMenu, "TOP", 0, -2)
         else
-            PortalButton:SetPoint("TOP", Portality.DropdownMenu.Buttons[spellIndex - 1], "BOTTOM", 0, -1)
+            PortalButton:SetPoint("TOP", Portalist.DropdownMenu.Buttons[spellIndex - 1], "BOTTOM", 0, -1)
         end
-        table.insert(Portality.DropdownMenu.Buttons, PortalButton)
+        table.insert(Portalist.DropdownMenu.Buttons, PortalButton)
     end
 
-    Portality.DropdownMenu:SetHeight(#Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 32)
-    if #Portality.DropdownMenu.Buttons == 0 then
-        Portality.DropdownMenu.DisclaimerText:Show()
+    Portalist.DropdownMenu:SetHeight(#Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * 33 + 3 or 32)
+    if #Portalist.DropdownMenu.Buttons == 0 then
+        Portalist.DropdownMenu.DisclaimerText:Show()
     else
-        Portality.DropdownMenu.DisclaimerText:Hide()
+        Portalist.DropdownMenu.DisclaimerText:Hide()
     end
 end
 
-function Portality:ToggleDropdownMenu()
-    if not Portality.DropdownMenu then Portality:CreateDropdownMenu() end
-    if Portality.DropdownMenu:IsShown() then Portality.DropdownMenu:Hide() else Portality:RefreshDropdownMenu() Portality.DropdownMenu:Show() end
-    if Portality.DropdownMenu:IsShown() then
+function Portalist:ToggleDropdownMenu()
+    if not Portalist.DropdownMenu then Portalist:CreateDropdownMenu() end
+    if Portalist.DropdownMenu:IsShown() then Portalist.DropdownMenu:Hide() else Portalist:RefreshDropdownMenu() Portalist.DropdownMenu:Show() end
+    if Portalist.DropdownMenu:IsShown() then
         local cursorX, cursorY = GetCursorPosition()
-        local cursorScale = Portality.DropdownMenu:GetEffectiveScale()
-        Portality.DropdownMenu:ClearAllPoints()
-        Portality.DropdownMenu:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", cursorX / cursorScale, cursorY / cursorScale)
+        local cursorScale = Portalist.DropdownMenu:GetEffectiveScale()
+        Portalist.DropdownMenu:ClearAllPoints()
+        Portalist.DropdownMenu:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", cursorX / cursorScale, cursorY / cursorScale)
     end
 end
 
-Portality_DropdownMenu = Portality.ToggleDropdownMenu
+Portalist_DropdownMenu = Portalist.ToggleDropdownMenu

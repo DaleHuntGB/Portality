@@ -1,8 +1,8 @@
-local _, Portality = ...
+local _, Portalist = ...
 
-Portality.Data = {}
+Portalist.Data = {}
 
-Portality.Data.ChallengeModePortals = {
+Portalist.Data.ChallengeModePortals = {
     {
         [1254400]   = true, -- Windrunner Spire
         [1254572]   = true, -- Magisters' Terrace
@@ -149,21 +149,21 @@ Portality.Data.ChallengeModePortals = {
     },
 }
 
-Portality.Data.ChallengeModePortalsByExpansion = {
-    [Portality.Data.ChallengeModePortals[1]] = "Season 01", -- Current
-    [Portality.Data.ChallengeModePortals[2]] = "Midnight", -- Midnight
-    [Portality.Data.ChallengeModePortals[3]] = "The War Within", -- The War Within
-    [Portality.Data.ChallengeModePortals[4]] = "Dragonflight", -- Dragonflight
-    [Portality.Data.ChallengeModePortals[5]] = "Shadowlands", -- Shadowlands
-    [Portality.Data.ChallengeModePortals[6]] = "Battle for Azeroth", -- Battle for Azeroth
-    [Portality.Data.ChallengeModePortals[7]] = "Legion", -- Legion
-    [Portality.Data.ChallengeModePortals[8]] = "Warlords of Draenor", -- Warlords of Draenor
-    [Portality.Data.ChallengeModePortals[9]] = "Mists of Pandaria", -- Mists of Pandaria
-    [Portality.Data.ChallengeModePortals[10]] = "Cataclysm", -- Cataclysm
-    [Portality.Data.ChallengeModePortals[11]] = "Wrath of the Lich King", -- Wrath of the Lich King
+Portalist.Data.ChallengeModePortalsByExpansion = {
+    [Portalist.Data.ChallengeModePortals[1]] = "Season 01", -- Current
+    [Portalist.Data.ChallengeModePortals[2]] = "Midnight", -- Midnight
+    [Portalist.Data.ChallengeModePortals[3]] = "The War Within", -- The War Within
+    [Portalist.Data.ChallengeModePortals[4]] = "Dragonflight", -- Dragonflight
+    [Portalist.Data.ChallengeModePortals[5]] = "Shadowlands", -- Shadowlands
+    [Portalist.Data.ChallengeModePortals[6]] = "Battle for Azeroth", -- Battle for Azeroth
+    [Portalist.Data.ChallengeModePortals[7]] = "Legion", -- Legion
+    [Portalist.Data.ChallengeModePortals[8]] = "Warlords of Draenor", -- Warlords of Draenor
+    [Portalist.Data.ChallengeModePortals[9]] = "Mists of Pandaria", -- Mists of Pandaria
+    [Portalist.Data.ChallengeModePortals[10]] = "Cataclysm", -- Cataclysm
+    [Portalist.Data.ChallengeModePortals[11]] = "Wrath of the Lich King", -- Wrath of the Lich King
 }
 
-Portality.Data.ChallengeModePortalsByName = {
+Portalist.Data.ChallengeModePortalsByName = {
     [1254400] = "Windrunner Spire",
     [1254572] = "Magisters' Terrace",
     [1254559] = "Maisara Caverns",
@@ -233,7 +233,7 @@ Portality.Data.ChallengeModePortalsByName = {
     [445440] = "Cinderbrew Meadery",
 }
 
-Portality.Data.CurrentSeason = {
+Portalist.Data.CurrentSeason = {
     [1254400] = "Windrunner Spire",
     [1254572] = "Magisters' Terrace",
     [1254559] = "Maisara Caverns",
@@ -244,7 +244,7 @@ Portality.Data.CurrentSeason = {
     [1254555] = "Pit of Saron",
 }
 
-Portality.Data.Hearthstones = {
+Portalist.Data.Hearthstones = {
 	[54452] = true,
 	[64488] = true,
 	[93672] = true,
@@ -281,7 +281,7 @@ Portality.Data.Hearthstones = {
     [110560] = true,
 }
 
-Portality.Data.Wormholes = {
+Portalist.Data.Wormholes = {
     [18984] = true,
 	[18986] = true,
 	[30542] = true,
@@ -298,7 +298,7 @@ Portality.Data.Wormholes = {
 	[248485] = true,
 }
 
-Portality.Data.WormholesByName = {
+Portalist.Data.WormholesByName = {
     [18984] = "Everlook",
 	[18986] = "Gadgetzan",
 	[30542] = "Area 52",
@@ -315,7 +315,7 @@ Portality.Data.WormholesByName = {
 	[248485] = "Quel'Thalas",
 }
 
-Portality.Data.Portals = {
+Portalist.Data.Portals = {
     [446534] = true,
     [1259194] = true,
     [395289] = true,
@@ -344,7 +344,7 @@ Portality.Data.Portals = {
     [176244] = true
 }
 
-Portality.Data.PortalByName = {
+Portalist.Data.PortalByName = {
     [132620] = "Vale of Eternal Blossoms",
     [32266] = "Exodar",
     [32267] = "Silvermoon (Burning Crusade)",
@@ -373,24 +373,24 @@ Portality.Data.PortalByName = {
     [11416] = "Ironforge",
 }
 
-Portality.Data.Mailboxes = {
+Portalist.Data.Mailboxes = {
     [194885] = true,
     [156833] = true,
     [264695] = true,
     [40768] = true,
 }
 
-function Portality:CreateDisplayName(spellID, isSpell)
-    local spellColour = Portality:IsLearnt(spellID, isSpell) and "|cFFAACCDD" or "|cFFFF4040"
+function Portalist:CreateDisplayName(spellID, isSpell)
+    local spellColour = Portalist:IsLearnt(spellID, isSpell) and "|cFFAACCDD" or "|cFFFF4040"
     if isSpell then
         local spellData = C_Spell.GetSpellInfo(spellID)
         if spellData then
-            local spellName = Portality.Data.ChallengeModePortalsByName[spellID] or Portality.Data.PortalByName[spellID] or spellData.name
+            local spellName = Portalist.Data.ChallengeModePortalsByName[spellID] or Portalist.Data.PortalByName[spellID] or spellData.name
             local spellTexture = spellData.iconID
             return string.format("|T%s:24:24|t %s%s|r", spellTexture, spellColour, spellName)
         end
     else
-        local itemName = Portality.Data.WormholesByName[spellID] or select(1, C_Item.GetItemInfo(spellID))
+        local itemName = Portalist.Data.WormholesByName[spellID] or select(1, C_Item.GetItemInfo(spellID))
         local itemTexture = select(10, C_Item.GetItemInfo(spellID))
         if itemName and itemTexture then
             return string.format("|T%s:24:24|t %s%s|r", itemTexture, spellColour, itemName)
@@ -398,7 +398,7 @@ function Portality:CreateDisplayName(spellID, isSpell)
     end
 end
 
-function Portality:IsLearnt(spellID, isSpell)
+function Portalist:IsLearnt(spellID, isSpell)
     if isSpell then
         return C_SpellBook.IsSpellKnown(spellID)
     else
@@ -406,46 +406,46 @@ function Portality:IsLearnt(spellID, isSpell)
     end
 end
 
-function Portality:IsSpellUsable(spellID)
-    local isUsable = C_Spell.IsSpellUsable(spellID) and Portality:IsLearnt(spellID, true)
+function Portalist:IsSpellUsable(spellID)
+    local isUsable = C_Spell.IsSpellUsable(spellID) and Portalist:IsLearnt(spellID, true)
     return isUsable
 end
 
-function Portality:IsItemUsable(itemID)
-    local isUsable = C_ToyBox.IsToyUsable(itemID) and Portality:IsLearnt(itemID, false)
+function Portalist:IsItemUsable(itemID)
+    local isUsable = C_ToyBox.IsToyUsable(itemID) and Portalist:IsLearnt(itemID, false)
     return isUsable
 end
 
-function Portality:GenerateDropdownData()
+function Portalist:GenerateDropdownData()
     local DropdownData = {}
 
-    for spellID, isActive in pairs(Portality.DB.global.ChallengeModePortals) do
-        if isActive and Portality:IsSpellUsable(spellID) then
-            table.insert(DropdownData, { ID = spellID, name = Portality:CreateDisplayName(spellID, true), sortOrder = 2 })
+    for spellID, isActive in pairs(Portalist.DB.global.ChallengeModePortals) do
+        if isActive and Portalist:IsSpellUsable(spellID) then
+            table.insert(DropdownData, { ID = spellID, name = Portalist:CreateDisplayName(spellID, true), isSpell = true, sortOrder = 2 })
         end
     end
 
-    for portalID, isActive in pairs(Portality.DB.global.Portals) do
-        if isActive and Portality:IsSpellUsable(portalID) then
-            table.insert(DropdownData, { ID = portalID, name = Portality:CreateDisplayName(portalID, true), sortOrder = 5 })
+    for portalID, isActive in pairs(Portalist.DB.global.Portals) do
+        if isActive and Portalist:IsSpellUsable(portalID) then
+            table.insert(DropdownData, { ID = portalID, name = Portalist:CreateDisplayName(portalID, true), isSpell = true, sortOrder = 5 })
         end
     end
 
-    for itemID, isActive in pairs(Portality.DB.global.Hearthstones) do
-        if isActive and Portality:IsItemUsable(itemID) then
-            table.insert(DropdownData, { ID = itemID, name = Portality:CreateDisplayName(itemID, false), sortOrder = 1 })
+    for itemID, isActive in pairs(Portalist.DB.global.Hearthstones) do
+        if isActive and Portalist:IsItemUsable(itemID) then
+            table.insert(DropdownData, { ID = itemID, name = Portalist:CreateDisplayName(itemID, false), isSpell = false, sortOrder = 1 })
         end
     end
 
-    for wormholeID, isActive in pairs(Portality.DB.global.Wormholes) do
-        if isActive and Portality:IsItemUsable(wormholeID) then
-            table.insert(DropdownData, { ID = wormholeID, name = Portality:CreateDisplayName(wormholeID, false), sortOrder = 3 })
+    for wormholeID, isActive in pairs(Portalist.DB.global.Wormholes) do
+        if isActive and Portalist:IsItemUsable(wormholeID) then
+            table.insert(DropdownData, { ID = wormholeID, name = Portalist:CreateDisplayName(wormholeID, false), isSpell = false, sortOrder = 3 })
         end
     end
 
-    for mailBoxID, isActive in pairs(Portality.DB.global.Mailboxes) do
-        if isActive and Portality:IsItemUsable(mailBoxID) then
-            table.insert(DropdownData, { ID = mailBoxID, name = Portality:CreateDisplayName(mailBoxID, false), sortOrder = 4 })
+    for mailBoxID, isActive in pairs(Portalist.DB.global.Mailboxes) do
+        if isActive and Portalist:IsItemUsable(mailBoxID) then
+            table.insert(DropdownData, { ID = mailBoxID, name = Portalist:CreateDisplayName(mailBoxID, false), isSpell = false, sortOrder = 4 })
         end
     end
 
@@ -456,5 +456,5 @@ function Portality:GenerateDropdownData()
         return a.name < b.name
     end)
 
-    Portality.DropdownData = DropdownData
+    Portalist.DropdownData = DropdownData
 end

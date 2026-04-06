@@ -1,4 +1,4 @@
-local _, Portality = ...
+local _, Portalist = ...
 
 local Defaults = {
     global = {
@@ -149,6 +149,6 @@ local Defaults = {
     }
 }
 
-function Portality:GetDefaults()
+function Portalist:GetDefaults()
     return Defaults
 end

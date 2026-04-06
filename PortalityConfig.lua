@@ -1,14 +1,14 @@
-local _, Portality = ...
+local _, Portalist = ...
 local AG = LibStub("AceGUI-3.0")
 local isGUIOpen = false
 local GUIFrame = nil
 
-function Portality:CreateGUI()
-    local DB = Portality.DB.global
+function Portalist:CreateGUI()
+    local DB = Portalist.DB.global
     if isGUIOpen then return end
     isGUIOpen = true
     GUIFrame = AG:Create("Frame")
-    GUIFrame:SetTitle("|A:dungeon:18:18|a|cFF8080FFPortality|r")
+    GUIFrame:SetTitle("|A:dungeon:18:18|a|cFF8080FFPortalist|r")
     GUIFrame:SetLayout("Flow")
     GUIFrame:SetWidth(800)
     GUIFrame:SetHeight(600)
@@ -22,21 +22,21 @@ function Portality:CreateGUI()
     KeybindContainer:SetFullWidth(true)
     GUIFrame:AddChild(KeybindContainer)
 
-    Portality.ActiveKeybind = nil
+    Portalist.ActiveKeybind = nil
 
     local keybindButton = AG:Create("Button")
     keybindButton:SetRelativeWidth(0.5)
     keybindButton:SetText(select(1, GetBindingKey("PORTALITY_OPEN")) or "None")
-    keybindButton:SetCallback("OnClick", function() Portality.ActiveKeybind = 1 Portality.KeybindCaptureFrame:Show() end)
+    keybindButton:SetCallback("OnClick", function() Portalist.ActiveKeybind = 1 Portalist.KeybindCaptureFrame:Show() end)
     KeybindContainer:AddChild(keybindButton)
 
     local keybindButtonTwo = AG:Create("Button")
     keybindButtonTwo:SetRelativeWidth(0.5)
     keybindButtonTwo:SetText(select(2, GetBindingKey("PORTALITY_OPEN")) or "None")
-    keybindButtonTwo:SetCallback("OnClick", function() Portality.ActiveKeybind = 2 Portality.KeybindCaptureFrame:Show() end)
+    keybindButtonTwo:SetCallback("OnClick", function() Portalist.ActiveKeybind = 2 Portalist.KeybindCaptureFrame:Show() end)
     KeybindContainer:AddChild(keybindButtonTwo)
 
-    if not Portality.KeybindCaptureFrame then
+    if not Portalist.KeybindCaptureFrame then
         local keybindCaptureFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
         keybindCaptureFrame:SetSize(300, 48)
         keybindCaptureFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
@@ -50,7 +50,7 @@ function Portality:CreateGUI()
             if key == "LSHIFT" or key == "RSHIFT" or key == "LCTRL" or key == "RCTRL" or key == "LALT" or key == "RALT" then return end
 
             local KeybindA, KeybindB = GetBindingKey("PORTALITY_OPEN")
-            local activeKeybind = Portality.ActiveKeybind
+            local activeKeybind = Portalist.ActiveKeybind
             if not activeKeybind then return end
 
             local keyCombo
@@ -77,7 +77,7 @@ function Portality:CreateGUI()
             local KeybindA, KeybindB = GetBindingKey("PORTALITY_OPEN")
             keybindButton:SetText(KeybindA or "None")
             keybindButtonTwo:SetText(KeybindB or "None")
-            Portality.ActiveKeybind = nil
+            Portalist.ActiveKeybind = nil
         end)
 
         keybindCaptureFrame:Hide()
@@ -88,7 +88,7 @@ function Portality:CreateGUI()
         captureFrameText:SetText("Set a Keybind\nPress Escape to Clear")
         captureFrameText:SetJustifyH("CENTER")
 
-        Portality.KeybindCaptureFrame = keybindCaptureFrame
+        Portalist.KeybindCaptureFrame = keybindCaptureFrame
     end
 
     local function CreateToggleList(parent, dataList, activeTable, isSpell)
@@ -99,25 +99,25 @@ function Portality:CreateGUI()
         parent:AddChild(ScrollContainer)
 
         if isSpell then
-            if dataList == Portality.Data.ChallengeModePortals then
+            if dataList == Portalist.Data.ChallengeModePortals then
                 for _, expansionPortals in ipairs(dataList) do
                     local HasVisiblePortals = false
                     for spellID, isAvailable in pairs(expansionPortals) do
                         if isAvailable then
                             if not HasVisiblePortals then
                                 local ExpansionHeading = AG:Create("Heading")
-                                ExpansionHeading:SetText(Portality.Data.ChallengeModePortalsByExpansion[expansionPortals])
+                                ExpansionHeading:SetText(Portalist.Data.ChallengeModePortalsByExpansion[expansionPortals])
                                 ExpansionHeading:SetFullWidth(true)
                                 ScrollContainer:AddChild(ExpansionHeading)
                                 HasVisiblePortals = true
                             end
 
                             local Toggle = AG:Create("CheckBox")
-                            Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
+                            Toggle:SetLabel(Portalist:CreateDisplayName(spellID, isSpell))
                             Toggle:SetValue(activeTable[spellID] == true)
                             Toggle:SetRelativeWidth(0.5)
-                            Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
-                            Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
+                            Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portalist:GenerateDropdownData() end)
+                            Toggle:SetDisabled(not Portalist:IsLearnt(spellID, isSpell))
                             ScrollContainer:AddChild(Toggle)
                         end
                     end
@@ -125,11 +125,11 @@ function Portality:CreateGUI()
             else
                 for spellID in pairs(dataList) do
                     local Toggle = AG:Create("CheckBox")
-                    Toggle:SetLabel(Portality:CreateDisplayName(spellID, isSpell))
+                    Toggle:SetLabel(Portalist:CreateDisplayName(spellID, isSpell))
                     Toggle:SetValue(activeTable[spellID] == true)
                     Toggle:SetRelativeWidth(0.5)
-                    Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portality:GenerateDropdownData() end)
-                    Toggle:SetDisabled(not Portality:IsLearnt(spellID, isSpell))
+                    Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portalist:GenerateDropdownData() end)
+                    Toggle:SetDisabled(not Portalist:IsLearnt(spellID, isSpell))
                     ScrollContainer:AddChild(Toggle)
                 end
             end
@@ -138,11 +138,11 @@ function Portality:CreateGUI()
 
         for itemID in pairs(dataList) do
             local Toggle = AG:Create("CheckBox")
-            Toggle:SetLabel(Portality:CreateDisplayName(itemID, isSpell))
+            Toggle:SetLabel(Portalist:CreateDisplayName(itemID, isSpell))
             Toggle:SetValue(activeTable[itemID] == true)
             Toggle:SetRelativeWidth(0.5)
-            Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[itemID] = value Portality:GenerateDropdownData() end)
-            Toggle:SetDisabled(not Portality:IsLearnt(itemID, isSpell))
+            Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[itemID] = value Portalist:GenerateDropdownData() end)
+            Toggle:SetDisabled(not Portalist:IsLearnt(itemID, isSpell))
             ScrollContainer:AddChild(Toggle)
         end
     end
@@ -150,15 +150,15 @@ function Portality:CreateGUI()
     local function SelectTabGroup(GUIContainer, _, TabGroup)
         GUIContainer:ReleaseChildren()
         if TabGroup == "ChallengeModePortals" then
-            CreateToggleList(GUIContainer, Portality.Data.ChallengeModePortals, DB.ChallengeModePortals, true)
+            CreateToggleList(GUIContainer, Portalist.Data.ChallengeModePortals, DB.ChallengeModePortals, true)
         elseif TabGroup == "Hearthstones" then
-            CreateToggleList(GUIContainer, Portality.Data.Hearthstones, DB.Hearthstones, false)
+            CreateToggleList(GUIContainer, Portalist.Data.Hearthstones, DB.Hearthstones, false)
         elseif TabGroup == "Wormholes" then
-            CreateToggleList(GUIContainer, Portality.Data.Wormholes, DB.Wormholes, false)
+            CreateToggleList(GUIContainer, Portalist.Data.Wormholes, DB.Wormholes, false)
         elseif TabGroup == "Portals" then
-            CreateToggleList(GUIContainer, Portality.Data.Portals, DB.Portals, true)
+            CreateToggleList(GUIContainer, Portalist.Data.Portals, DB.Portals, true)
         elseif TabGroup == "Mailboxes" then
-            CreateToggleList(GUIContainer, Portality.Data.Mailboxes, DB.Mailboxes, false)
+            CreateToggleList(GUIContainer, Portalist.Data.Mailboxes, DB.Mailboxes, false)
         end
     end
 
