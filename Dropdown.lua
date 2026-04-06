@@ -78,7 +78,7 @@ end
 
 function Portality:CreateDropdownMenu()
     local DropdownMenu = CreateFrame("Frame", "PortalityDropdownMenu", UIParent, "BackdropTemplate")
-    DropdownMenu:SetSize(300, 1)
+    DropdownMenu:SetSize(400, 1)
     DropdownMenu:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     DropdownMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     DropdownMenu:SetBackdropColor(0, 0, 0, 0.8)
@@ -113,7 +113,7 @@ function Portality:CreateDropdownMenu()
         end
     end
 
-   DropdownMenu:SetSize(300, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 32)
+   DropdownMenu:SetSize(400, #Portality.DropdownMenu.Buttons > 0 and #Portality.DropdownMenu.Buttons * 33 + 3 or 32)
    if #Portality.DropdownMenu.Buttons == 0 then
         Portality.DropdownMenu.DisclaimerText:Show()
     else
