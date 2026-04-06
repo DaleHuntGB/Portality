@@ -9,7 +9,7 @@ function Portalist:CreateGUI()
     if isGUIOpen then return end
     isGUIOpen = true
     GUIFrame = AG:Create("Frame")
-    GUIFrame:SetTitle("|A:dungeon:18:18|a|cFF8080FFPortalist|r")
+    GUIFrame:SetTitle("|cFF8080FFPortalist|r")
     GUIFrame:SetLayout("Flow")
     GUIFrame:SetWidth(800)
     GUIFrame:SetHeight(800)

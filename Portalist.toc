@@ -7,7 +7,6 @@
 ## X-Curse-Project-ID: 1506117
 ## X-Wago-ID: x618yyN1
 
-
 Libs/Init.xml
 
 Data.lua
