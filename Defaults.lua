@@ -175,6 +175,12 @@ local Defaults = {
             [1231411]  = false,
             [126892]   = false,
             [460905]   = false,
+            [265225]   = false,
+            [1238686]  = false,
+            [291944]   = false,
+            [461063]   = false,
+            [312370]   = false,
+            [312372]   = false,
         },
     }
 }

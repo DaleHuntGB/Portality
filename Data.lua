@@ -352,6 +352,12 @@ Portalist.Data.Miscellaneous = {
     [1231411]      = true,
     [126892]       = true,
     [460905]       = true,
+    [265225]       = true,
+    [1238686]      = true,
+    [291944]       = true,
+    [461063]       = true,
+    [312370]       = true,
+    [312372]       = true,
 }
 
 function Portalist:CreateDisplayName(spellID, isSpell)
