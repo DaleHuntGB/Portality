@@ -19,6 +19,7 @@ local function CreatePortalButton(buttonName, spellData)
         PortalButton:SetAttribute("type", "item")
         PortalButton:SetAttribute("item", "item:" .. spellData.ID)
     end
+    PortalButton.SpellData = spellData
 
     PortalButton:SetScript("PostClick", function() Portalist.DropdownMenu:Hide() end)
 
@@ -51,7 +52,8 @@ local function CreatePortalButton(buttonName, spellData)
     ButtonSpellText:SetText(spellData.name)
     ButtonSpellText:SetWidth(PortalButton:GetWidth() * 0.5)
     ButtonSpellText:SetWordWrap(false)
-    ButtonSpellText:SetTextColor(DB.Text.NormalColour.r, DB.Text.NormalColour.g, DB.Text.NormalColour.b, DB.Text.NormalColour.a)
+    local isLearnt = spellData.isSpell and Portalist:IsLearnt(spellData.ID, true) or Portalist:IsLearnt(spellData.ID, false)
+    if not isLearnt then ButtonSpellText:SetTextColor(DB.Text.UnusableColour.r, DB.Text.UnusableColour.g, DB.Text.UnusableColour.b, DB.Text.UnusableColour.a) else ButtonSpellText:SetTextColor(DB.Text.NormalColour.r, DB.Text.NormalColour.g, DB.Text.NormalColour.b, DB.Text.NormalColour.a) end
     ButtonSpellText:SetJustifyH("LEFT")
 
     PortalButton.ButtonSpellText = ButtonSpellText
@@ -177,20 +179,15 @@ function Portalist:RefreshColours()
         portalButton:SetBackdropBorderColor(buttonDB.BorderColour.r, buttonDB.BorderColour.g, buttonDB.BorderColour.b, buttonDB.BorderColour.a)
         portalButton:SetScript("OnEnter", function() portalButton:SetBackdropColor(buttonDB.HighlightColour.r, buttonDB.HighlightColour.g, buttonDB.HighlightColour.b, buttonDB.HighlightColour.a) end)
         portalButton:SetScript("OnLeave", function() portalButton:SetBackdropColor(buttonDB.BackgroundColour.r, buttonDB.BackgroundColour.g, buttonDB.BackgroundColour.b, buttonDB.BackgroundColour.a) end)
-        if portalButton:GetChildren() then
-            for _, child in ipairs({portalButton:GetChildren()}) do
-                if child:IsObjectType("StatusBar") then
-                    child:SetStatusBarColor(buttonDB.DurationColour.r, buttonDB.DurationColour.g, buttonDB.DurationColour.b, buttonDB.DurationColour.a)
-                elseif child:IsObjectType("FontString") then
-                    local textType = child:GetPoint()
-                    if textType and textType:find("LEFT") then
-                        child:SetTextColor(buttonDB.Text.NormalColour.r, buttonDB.Text.NormalColour.g, buttonDB.Text.NormalColour.b, buttonDB.Text.NormalColour.a)
-                    elseif textType and textType:find("RIGHT") then
-                        child:SetTextColor(buttonDB.Text.DurationColour.r, buttonDB.Text.DurationColour.g, buttonDB.Text.DurationColour.b, buttonDB.Text.DurationColour.a)
-                    end
-                end
-            end
+        portalButton.ButtonDurationStatusBar:SetStatusBarColor(buttonDB.DurationColour.r, buttonDB.DurationColour.g, buttonDB.DurationColour.b, buttonDB.DurationColour.a)
+        local buttonData = portalButton.SpellData
+        local spellTextColour = buttonDB.Text.NormalColour
+        if buttonData then
+            local isLearnt = buttonData.isSpell and Portalist:IsLearnt(buttonData.ID, true) or Portalist:IsLearnt(buttonData.ID, false)
+            if not isLearnt then spellTextColour = buttonDB.Text.UnusableColour end
         end
+        portalButton.ButtonSpellText:SetTextColor(spellTextColour.r, spellTextColour.g, spellTextColour.b, spellTextColour.a)
+        portalButton.ButtonDurationText:SetTextColor(buttonDB.Text.DurationColour.r, buttonDB.Text.DurationColour.g, buttonDB.Text.DurationColour.b, buttonDB.Text.DurationColour.a)
     end
 end
 

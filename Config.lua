@@ -5,7 +5,7 @@ local GUIFrame = nil
 
 local function CreateDisplayName(spellID, isSpell)
     local DB = Portalist.DB.global.General
-    local isLearntColour = Portalist:IsLearnt(spellID, isSpell) and C_ColorUtil.GenerateTextColorCode(DB.Buttons.Text.NormalColour) or C_ColorUtil.GenerateTextColorCode(DB.Buttons.Text.UnusableColour)
+    local isLearntColour = Portalist:IsLearnt(spellID, isSpell) and "FFFFFFFF" or "FFFF4040"
     if isSpell then
         local spellData = C_Spell.GetSpellInfo(spellID)
         if spellData then
