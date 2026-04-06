@@ -46,7 +46,7 @@ local function CreatePortalButton(buttonName, spellData)
     PortalButton.ButtonIcon = ButtonIcon
 
     local ButtonSpellText = ButtonDurationStatusBar:CreateFontString(nil, "OVERLAY")
-    ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", DB.Text.Size, "OUTLINE")
     ButtonSpellText:SetPoint("LEFT", ButtonIcon, "RIGHT", 3, 0.1)
     ButtonSpellText:SetText(spellData.name)
     ButtonSpellText:SetWidth(PortalButton:GetWidth() * 0.5)
@@ -57,7 +57,7 @@ local function CreatePortalButton(buttonName, spellData)
     PortalButton.ButtonSpellText = ButtonSpellText
 
     local ButtonDurationText = ButtonDurationStatusBar:CreateFontString(nil, "OVERLAY")
-    ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", DB.Text.Size, "OUTLINE")
     ButtonDurationText:SetPoint("RIGHT", PortalButton, "RIGHT", -2, 0.1)
     ButtonDurationText:SetTextColor(DB.Text.DurationColour.r, DB.Text.DurationColour.g, DB.Text.DurationColour.b, DB.Text.DurationColour.a)
     ButtonDurationText:SetJustifyH("RIGHT")
@@ -209,6 +209,9 @@ function Portalist:RefreshSizes()
         portalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, Portalist.DB.global.General.Buttons.Height)
         portalButton.ButtonIcon:SetSize(Portalist.DB.global.General.Buttons.Height - 4, Portalist.DB.global.General.Buttons.Height - 4)
         portalButton.ButtonSpellText:SetWidth(portalButton:GetWidth() * 0.5)
+        portalButton.ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", Portalist.DB.global.General.Buttons.Text.Size, "OUTLINE")
+        portalButton.ButtonDurationText:SetPoint("RIGHT", portalButton, "RIGHT", -2, 0.1)
+        portalButton.ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", Portalist.DB.global.General.Buttons.Text.Size, "OUTLINE")
         portalButton.ButtonDurationStatusBar:SetHeight(Portalist.DB.global.General.Buttons.Height - 2)
     end
 end

@@ -19,6 +19,7 @@ local Defaults = {
                     NormalColour = { r = 1, g = 1, b = 1, a = 1 },
                     DurationColour = { r = 1, g = 1, b = 1, a = 1 },
                     UnusableColour = { r = 1, g = 0.25, b = 0.25, a = 1 },
+                    Size = 13,
                 }
             },
         },
