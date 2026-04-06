@@ -381,19 +381,20 @@ Portalist.Data.Mailboxes = {
 }
 
 function Portalist:CreateDisplayName(spellID, isSpell)
-    local spellColour = Portalist:IsLearnt(spellID, isSpell) and "|cFFAACCDD" or "|cFFFF4040"
+    local DB = Portalist.DB.global.General
+    local isLearntColour = Portalist:IsLearnt(spellID, isSpell) and C_ColorUtil.GenerateTextColorCode(DB.Buttons.Text.NormalColour) or C_ColorUtil.GenerateTextColorCode(DB.Buttons.Text.UnusableColour)
     if isSpell then
         local spellData = C_Spell.GetSpellInfo(spellID)
         if spellData then
             local spellName = Portalist.Data.ChallengeModePortalsByName[spellID] or Portalist.Data.PortalByName[spellID] or spellData.name
             local spellTexture = spellData.iconID
-            return string.format("|T%s:24:24|t %s%s|r", spellTexture, spellColour, spellName)
+            return string.format("|T%s:24:24|t |c%s%s|r", spellTexture, isLearntColour, spellName)
         end
     else
         local itemName = Portalist.Data.WormholesByName[spellID] or select(1, C_Item.GetItemInfo(spellID))
         local itemTexture = select(10, C_Item.GetItemInfo(spellID))
         if itemName and itemTexture then
-            return string.format("|T%s:24:24|t %s%s|r", itemTexture, spellColour, itemName)
+            return string.format("|T%s:24:24|t |c%s%s|r", itemTexture, isLearntColour, itemName)
         end
     end
 end

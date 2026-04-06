@@ -11,5 +11,5 @@ function AddOn:OnEnable()
     SLASH_PORTALIST2 = "/port"
     SlashCmdList["PORTALIST"] = function() Portalist:CreateGUI() end
 
-    print("|cFF8080FFPortalist|r: '|cFF8080FF/portalist|r' or '|cFF8080FF/port|r' to open the configuration menu.")
+    if Portalist.DB.global.General.ShowLoginMessage then print("|cFF8080FFPortalist|r: '|cFF8080FF/portalist|r' or '|cFF8080FF/port|r' to open the configuration menu.") end
 end

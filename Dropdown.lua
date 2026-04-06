@@ -1,14 +1,15 @@
 local _, Portalist = ...
 
 local function CreatePortalButton(buttonName, spellData)
+    local DB = Portalist.DB.global.General.Buttons
     local PortalButton = CreateFrame("Button", buttonName, Portalist.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
     PortalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, 32)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
-    PortalButton:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
-    PortalButton:SetBackdropBorderColor(0, 0, 0, 1)
+    PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
+    PortalButton:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
 
-    PortalButton:SetScript("OnEnter", function(self) self:SetBackdropColor(0.3, 0.3, 0.3, 0.8) end)
-    PortalButton:SetScript("OnLeave", function(self) self:SetBackdropColor(0.1, 0.1, 0.1, 0.8) end)
+    PortalButton:SetScript("OnEnter", function() PortalButton:SetBackdropColor(DB.HighlightColour.r, DB.HighlightColour.g, DB.HighlightColour.b, DB.HighlightColour.a) end)
+    PortalButton:SetScript("OnLeave", function() PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a) end)
 
     PortalButton:RegisterForClicks("AnyUp", "AnyDown")
     if spellData.isSpell then
@@ -26,7 +27,7 @@ local function CreatePortalButton(buttonName, spellData)
     ButtonDurationStatusBar:SetPoint("BOTTOMRIGHT", PortalButton, "BOTTOMRIGHT", -1, 1)
     ButtonDurationStatusBar:SetHeight(30)
     ButtonDurationStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8X8")
-    ButtonDurationStatusBar:SetStatusBarColor(0.5, 0.5, 0.5, 0.8)
+    ButtonDurationStatusBar:SetStatusBarColor(DB.DurationColour.r, DB.DurationColour.g, DB.DurationColour.b, DB.DurationColour.a)
     ButtonDurationStatusBar:SetMinMaxValues(0, 1)
     ButtonDurationStatusBar:SetValue(0)
 
@@ -34,11 +35,13 @@ local function CreatePortalButton(buttonName, spellData)
     ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
     ButtonSpellText:SetPoint("LEFT", PortalButton, "LEFT", 3, 0)
     ButtonSpellText:SetText(spellData.name)
+    ButtonSpellText:SetTextColor(DB.Text.NormalColour.r, DB.Text.NormalColour.g, DB.Text.NormalColour.b, DB.Text.NormalColour.a)
     ButtonSpellText:SetJustifyH("LEFT")
 
     local ButtonDurationText = ButtonDurationStatusBar:CreateFontString(nil, "OVERLAY")
     ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
     ButtonDurationText:SetPoint("RIGHT", PortalButton, "RIGHT", -3, 0)
+    ButtonDurationText:SetTextColor(DB.Text.DurationColour.r, DB.Text.DurationColour.g, DB.Text.DurationColour.b, DB.Text.DurationColour.a)
     ButtonDurationText:SetJustifyH("RIGHT")
 
     if spellData.isSpell then
@@ -46,7 +49,7 @@ local function CreatePortalButton(buttonName, spellData)
             local spellCooldown = C_Spell.GetSpellCooldown(spellData.ID)
             if spellCooldown and spellCooldown.startTime > 0 then
                 local remainingCooldown = spellCooldown.startTime + spellCooldown.duration - GetTime()
-                ButtonDurationText:SetText(string.format("|cFFCCCCCC%02d:%02d|r", math.floor(remainingCooldown / 60), remainingCooldown % 60))
+                ButtonDurationText:SetText(string.format("%02d:%02d", math.floor(remainingCooldown / 60), remainingCooldown % 60))
                 ButtonDurationStatusBar:SetMinMaxValues(0, spellCooldown.duration)
                 ButtonDurationStatusBar:SetValue(remainingCooldown)
             else
@@ -61,7 +64,7 @@ local function CreatePortalButton(buttonName, spellData)
             local itemCooldownStart, itemCooldownDuration = C_Item.GetItemCooldown(spellData.ID)
             if itemCooldownStart and itemCooldownStart > 0 then
                 local remainingCooldown = itemCooldownStart + itemCooldownDuration - GetTime()
-                ButtonDurationText:SetText(string.format("|cFFCCCCCC%02d:%02d|r", math.floor(remainingCooldown / 60), remainingCooldown % 60))
+                ButtonDurationText:SetText(string.format("%02d:%02d", math.floor(remainingCooldown / 60), remainingCooldown % 60))
                 ButtonDurationStatusBar:SetMinMaxValues(0, itemCooldownDuration)
                 ButtonDurationStatusBar:SetValue(remainingCooldown)
             else
@@ -77,13 +80,14 @@ local function CreatePortalButton(buttonName, spellData)
 end
 
 function Portalist:CreateDropdownMenu()
+    local DB = Portalist.DB.global.General.Dropdown
     if InCombatLockdown() then return end
     local DropdownMenu = CreateFrame("Frame", "PortalistDropdownMenu", UIParent, "BackdropTemplate")
     DropdownMenu:SetSize(400, 1)
     DropdownMenu:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     DropdownMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
-    DropdownMenu:SetBackdropColor(0, 0, 0, 0.8)
-    DropdownMenu:SetBackdropBorderColor(0, 0, 0, 1)
+    DropdownMenu:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
+    DropdownMenu:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
     DropdownMenu:RegisterEvent("PLAYER_REGEN_DISABLED")
     DropdownMenu:RegisterEvent("ENCOUNTER_START")
     DropdownMenu:SetScript("OnEvent", function(_, event) if event == "PLAYER_REGEN_DISABLED" or event == "ENCOUNTER_START" and DropdownMenu:IsShown() then DropdownMenu:Hide() end end)
@@ -132,6 +136,34 @@ function Portalist:CreateDropdownMenu()
     DropdownMenuController:Hide()
 
     Portalist.DropdownMenuController = DropdownMenuController
+end
+
+function Portalist:RefreshColours()
+    if not Portalist.DropdownMenu then return end
+    local DB = Portalist.DB.global.General.Dropdown
+    Portalist.DropdownMenu:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
+    Portalist.DropdownMenu:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
+    for _, portalButton in ipairs(Portalist.DropdownMenu.Buttons or {}) do
+        local buttonDB = Portalist.DB.global.General.Buttons
+        portalButton:SetBackdropColor(buttonDB.BackgroundColour.r, buttonDB.BackgroundColour.g, buttonDB.BackgroundColour.b, buttonDB.BackgroundColour.a)
+        portalButton:SetBackdropBorderColor(buttonDB.BorderColour.r, buttonDB.BorderColour.g, buttonDB.BorderColour.b, buttonDB.BorderColour.a)
+        portalButton:SetScript("OnEnter", function() portalButton:SetBackdropColor(buttonDB.HighlightColour.r, buttonDB.HighlightColour.g, buttonDB.HighlightColour.b, buttonDB.HighlightColour.a) end)
+        portalButton:SetScript("OnLeave", function() portalButton:SetBackdropColor(buttonDB.BackgroundColour.r, buttonDB.BackgroundColour.g, buttonDB.BackgroundColour.b, buttonDB.BackgroundColour.a) end)
+        if portalButton:GetChildren() then
+            for _, child in ipairs({portalButton:GetChildren()}) do
+                if child:IsObjectType("StatusBar") then
+                    child:SetStatusBarColor(buttonDB.DurationColour.r, buttonDB.DurationColour.g, buttonDB.DurationColour.b, buttonDB.DurationColour.a)
+                elseif child:IsObjectType("FontString") then
+                    local textType = child:GetPoint()
+                    if textType and textType:find("LEFT") then
+                        child:SetTextColor(buttonDB.Text.NormalColour.r, buttonDB.Text.NormalColour.g, buttonDB.Text.NormalColour.b, buttonDB.Text.NormalColour.a)
+                    elseif textType and textType:find("RIGHT") then
+                        child:SetTextColor(buttonDB.Text.DurationColour.r, buttonDB.Text.DurationColour.g, buttonDB.Text.DurationColour.b, buttonDB.Text.DurationColour.a)
+                    end
+                end
+            end
+        end
+    end
 end
 
 function Portalist:RefreshDropdownMenu()
