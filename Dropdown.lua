@@ -151,6 +151,8 @@ function Portalist:CreateDropdownMenu()
         end
     end
 
+    DevTool:AddData(Portalist.DropdownData)
+
    DropdownMenu:SetSize(DB.Width, #Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * (Portalist.DB.global.General.Buttons.Height + 1) + 3 or Portalist.DB.global.General.Buttons.Height)
    if #Portalist.DropdownMenu.Buttons == 0 then Portalist.DropdownMenu.DisclaimerText:Show() else Portalist.DropdownMenu.DisclaimerText:Hide() end
 
@@ -250,6 +252,5 @@ function Portalist:ToggleDropdownMenu()
         Portalist.DropdownMenu:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", cursorX / cursorScale, cursorY / cursorScale)
     end
 end
-
 
 Portalist_DropdownMenu = Portalist.ToggleDropdownMenu

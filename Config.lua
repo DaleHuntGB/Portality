@@ -319,6 +319,8 @@ function Portalist:CreateGUI()
             CreateToggleList(GUIContainer, Portalist.Data.Portals, DB.Portals, true)
         elseif TabGroup == "Mailboxes" then
             CreateToggleList(GUIContainer, Portalist.Data.Mailboxes, DB.Mailboxes, false)
+        elseif TabGroup == "Miscellaneous" then
+            CreateToggleList(GUIContainer, Portalist.Data.Miscellaneous, DB.Miscellaneous, true)
         end
     end
 
@@ -329,7 +331,8 @@ function Portalist:CreateGUI()
         { text = "Hearthstones", value = "Hearthstones" },
         { text = "Wormholes", value = "Wormholes" },
         { text = "Portals", value = "Portals" },
-        { text = "Mailboxes", value = "Mailboxes" }
+        { text = "Mailboxes", value = "Mailboxes" },
+        { text = "Miscellaneous", value = "Miscellaneous" },
     })
     TabGroup:SetCallback("OnGroupSelected", SelectTabGroup)
     TabGroup:SetFullHeight(true)

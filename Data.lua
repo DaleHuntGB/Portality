@@ -348,6 +348,11 @@ Portalist.Data.Mailboxes = {
     [40768]        = true,
 }
 
+Portalist.Data.Miscellaneous = {
+    [1231411]      = true,
+    [126892]       = true,
+}
+
 function Portalist:CreateDisplayName(spellID, isSpell)
     if isSpell then
         local spellData = C_Spell.GetSpellInfo(spellID)
@@ -419,6 +424,12 @@ function Portalist:GenerateDropdownData()
     for mailBoxID, isActive in pairs(Portalist.DB.global.Mailboxes) do
         if isActive and Portalist:IsItemUsable(mailBoxID) then
             table.insert(DropdownData, { ID = mailBoxID, name = Portalist:CreateDisplayName(mailBoxID, false), isSpell = false, sortOrder = 4 })
+        end
+    end
+
+    for miscellaneousID, isActive in pairs(Portalist.DB.global.Miscellaneous) do
+        if isActive and Portalist:IsSpellUsable(miscellaneousID) then
+            table.insert(DropdownData, { ID = miscellaneousID, name = Portalist:CreateDisplayName(miscellaneousID, true), isSpell = true, sortOrder = 6 })
         end
     end
 

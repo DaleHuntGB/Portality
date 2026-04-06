@@ -170,7 +170,11 @@ local Defaults = {
             [156833] = false,
             [264695] = false,
             [40768] = false,
-        }
+        },
+        Miscellaneous = {
+            [1231411]  = false,
+            [126892]   = false,
+        },
     }
 }
 
