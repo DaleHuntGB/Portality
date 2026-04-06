@@ -50,13 +50,6 @@ Unavailable entries are still visible in the config window, but they are disable
 
 Both commands open the configuration window.
 
-## Installation
-
-1. Download or copy the `Portalist` folder.
-2. Place it in:
-   `World of Warcraft/_retail_/Interface/AddOns/`
-3. Restart the game or type `/reload`.
-
 ## Compatibility
 
 - **Game**: World of Warcraft Retail
