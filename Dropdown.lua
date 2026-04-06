@@ -1,17 +1,17 @@
 local _, Portalist = ...
+Portalist.Buttons = {}
 
 local function CreatePortalButton(buttonName, spellData)
     local DB = Portalist.DB.global.General.Buttons
     local PortalButton = CreateFrame("Button", buttonName, Portalist.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
-    PortalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, 32)
+    PortalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, DB.Height)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
     PortalButton:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
-
     PortalButton:SetScript("OnEnter", function() PortalButton:SetBackdropColor(DB.HighlightColour.r, DB.HighlightColour.g, DB.HighlightColour.b, DB.HighlightColour.a) end)
     PortalButton:SetScript("OnLeave", function() PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a) end)
-
     PortalButton:RegisterForClicks("AnyUp", "AnyDown")
+
     if spellData.isSpell then
         PortalButton:SetAttribute("type", "spell")
         PortalButton:SetAttribute("spell", spellData.ID)
@@ -25,24 +25,44 @@ local function CreatePortalButton(buttonName, spellData)
     local ButtonDurationStatusBar = CreateFrame("StatusBar", nil, PortalButton)
     ButtonDurationStatusBar:SetPoint("TOPLEFT", PortalButton, "TOPLEFT", 1, -1)
     ButtonDurationStatusBar:SetPoint("BOTTOMRIGHT", PortalButton, "BOTTOMRIGHT", -1, 1)
-    ButtonDurationStatusBar:SetHeight(30)
+    ButtonDurationStatusBar:SetHeight(DB.Height - 2)
     ButtonDurationStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8X8")
     ButtonDurationStatusBar:SetStatusBarColor(DB.DurationColour.r, DB.DurationColour.g, DB.DurationColour.b, DB.DurationColour.a)
     ButtonDurationStatusBar:SetMinMaxValues(0, 1)
     ButtonDurationStatusBar:SetValue(0)
 
+    PortalButton.ButtonDurationStatusBar = ButtonDurationStatusBar
+
+    local ButtonIcon = ButtonDurationStatusBar:CreateTexture(nil, "ARTWORK")
+    ButtonIcon:SetPoint("LEFT", PortalButton, "LEFT", 2, 0)
+    ButtonIcon:SetSize(DB.Height - 4, DB.Height - 4)
+    if spellData.isSpell then
+        ButtonIcon:SetTexture(C_Spell.GetSpellInfo(spellData.ID).iconID)
+    else
+        local itemTexture = select(10, C_Item.GetItemInfo(spellData.ID))
+        ButtonIcon:SetTexture(itemTexture)
+    end
+
+    PortalButton.ButtonIcon = ButtonIcon
+
     local ButtonSpellText = ButtonDurationStatusBar:CreateFontString(nil, "OVERLAY")
     ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
-    ButtonSpellText:SetPoint("LEFT", PortalButton, "LEFT", 3, 0)
+    ButtonSpellText:SetPoint("LEFT", ButtonIcon, "RIGHT", 3, 0.1)
     ButtonSpellText:SetText(spellData.name)
+    ButtonSpellText:SetWidth(PortalButton:GetWidth() * 0.5)
+    ButtonSpellText:SetWordWrap(false)
     ButtonSpellText:SetTextColor(DB.Text.NormalColour.r, DB.Text.NormalColour.g, DB.Text.NormalColour.b, DB.Text.NormalColour.a)
     ButtonSpellText:SetJustifyH("LEFT")
 
+    PortalButton.ButtonSpellText = ButtonSpellText
+
     local ButtonDurationText = ButtonDurationStatusBar:CreateFontString(nil, "OVERLAY")
     ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
-    ButtonDurationText:SetPoint("RIGHT", PortalButton, "RIGHT", -3, 0)
+    ButtonDurationText:SetPoint("RIGHT", PortalButton, "RIGHT", -2, 0.1)
     ButtonDurationText:SetTextColor(DB.Text.DurationColour.r, DB.Text.DurationColour.g, DB.Text.DurationColour.b, DB.Text.DurationColour.a)
     ButtonDurationText:SetJustifyH("RIGHT")
+
+    PortalButton.ButtonDurationText = ButtonDurationText
 
     if spellData.isSpell then
         PortalButton:SetScript("OnUpdate", function()
@@ -91,7 +111,7 @@ function Portalist:CreateDropdownMenu()
     local DB = Portalist.DB.global.General.Dropdown
     if InCombatLockdown() then return end
     local DropdownMenu = CreateFrame("Frame", "PortalistDropdownMenu", UIParent, "BackdropTemplate")
-    DropdownMenu:SetSize(400, 1)
+    DropdownMenu:SetSize(DB.Width, 1)
     DropdownMenu:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     DropdownMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     DropdownMenu:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
@@ -129,7 +149,7 @@ function Portalist:CreateDropdownMenu()
         end
     end
 
-   DropdownMenu:SetSize(400, #Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * 33 + 3 or 32)
+   DropdownMenu:SetSize(DB.Width, #Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * (Portalist.DB.global.General.Buttons.Height + 1) + 3 or Portalist.DB.global.General.Buttons.Height)
    if #Portalist.DropdownMenu.Buttons == 0 then Portalist.DropdownMenu.DisclaimerText:Show() else Portalist.DropdownMenu.DisclaimerText:Hide() end
 
     local DropdownMenuController = CreateFrame("Frame", nil, UIParent)
@@ -174,7 +194,27 @@ function Portalist:RefreshColours()
     end
 end
 
+function Portalist:RefreshSizes()
+    if not Portalist.DropdownMenu then return end
+    local DB = Portalist.DB.global.General.Dropdown
+    Portalist:GenerateDropdownData()
+    Portalist.DropdownMenu:SetSize(DB.Width, #Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * (Portalist.DB.global.General.Buttons.Height + 1) + 3 or Portalist.DB.global.General.Buttons.Height)
+    for index, portalButton in ipairs(Portalist.DropdownMenu.Buttons or {}) do
+        portalButton:ClearAllPoints()
+        if index == 1 then
+            portalButton:SetPoint("TOP", Portalist.DropdownMenu, "TOP", 0, -2)
+        else
+            portalButton:SetPoint("TOP", Portalist.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
+        end
+        portalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, Portalist.DB.global.General.Buttons.Height)
+        portalButton.ButtonIcon:SetSize(Portalist.DB.global.General.Buttons.Height - 4, Portalist.DB.global.General.Buttons.Height - 4)
+        portalButton.ButtonSpellText:SetWidth(portalButton:GetWidth() * 0.5)
+        portalButton.ButtonDurationStatusBar:SetHeight(Portalist.DB.global.General.Buttons.Height - 2)
+    end
+end
+
 function Portalist:RefreshDropdownMenu()
+    local DB = Portalist.DB.global.General.Dropdown
     if InCombatLockdown() then return end
     if not Portalist.DropdownMenu then return end
     for _, portalButton in ipairs(Portalist.DropdownMenu.Buttons or {}) do portalButton:Hide() portalButton:SetParent(nil) end
@@ -190,7 +230,7 @@ function Portalist:RefreshDropdownMenu()
         end
         table.insert(Portalist.DropdownMenu.Buttons, PortalButton)
     end
-    Portalist.DropdownMenu:SetHeight(#Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * 33 + 3 or 32)
+    Portalist.DropdownMenu:SetSize(DB.Width, #Portalist.DropdownMenu.Buttons > 0 and #Portalist.DropdownMenu.Buttons * (Portalist.DB.global.General.Buttons.Height + 1) + 3 or Portalist.DB.global.General.Buttons.Height)
     if #Portalist.DropdownMenu.Buttons == 0 then Portalist.DropdownMenu.DisclaimerText:Show() else Portalist.DropdownMenu.DisclaimerText:Hide() end
 end
 

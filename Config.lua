@@ -3,6 +3,25 @@ local AG = LibStub("AceGUI-3.0")
 local isGUIOpen = false
 local GUIFrame = nil
 
+local function CreateDisplayName(spellID, isSpell)
+    local DB = Portalist.DB.global.General
+    local isLearntColour = Portalist:IsLearnt(spellID, isSpell) and C_ColorUtil.GenerateTextColorCode(DB.Buttons.Text.NormalColour) or C_ColorUtil.GenerateTextColorCode(DB.Buttons.Text.UnusableColour)
+    if isSpell then
+        local spellData = C_Spell.GetSpellInfo(spellID)
+        if spellData then
+            local spellName = Portalist.Data.ChallengeModePortalsByName[spellID] or Portalist.Data.PortalByName[spellID] or spellData.name
+            local spellTexture = spellData.iconID
+            return string.format("|T%s:24:24|t |c%s%s|r", spellTexture, isLearntColour, spellName)
+        end
+    else
+        local itemName = Portalist.Data.WormholesByName[spellID] or select(1, C_Item.GetItemInfo(spellID))
+        local itemTexture = select(10, C_Item.GetItemInfo(spellID))
+        if itemName and itemTexture then
+            return string.format("|T%s:24:24|t |c%s%s|r", itemTexture, isLearntColour, itemName)
+        end
+    end
+end
+
 function Portalist:CreateGUI()
     if InCombatLockdown() then return end
     local DB = Portalist.DB.global
@@ -56,6 +75,22 @@ function Portalist:CreateGUI()
     DropdownBorderColourPicker:SetCallback("OnValueChanged", function(_, _, r, g, b, a) DB.General.Dropdown.BorderColour = { r = r, g = g, b = b, a = a } Portalist:RefreshColours() end)
     DropdownBorderColourPicker:SetRelativeWidth(0.5)
     ColoursContainer:AddChild(DropdownBorderColourPicker)
+
+    local DropdownWidth = AG:Create("Slider")
+    DropdownWidth:SetLabel("Width")
+    DropdownWidth:SetValue(DB.General.Dropdown.Width)
+    DropdownWidth:SetSliderValues(100, 500, 1)
+    DropdownWidth:SetCallback("OnValueChanged", function(_, _, value) DB.General.Dropdown.Width = value Portalist:RefreshSizes() end)
+    DropdownWidth:SetRelativeWidth(0.5)
+    ColoursContainer:AddChild(DropdownWidth)
+
+    local DropdownHeight = AG:Create("Slider")
+    DropdownHeight:SetLabel("Height")
+    DropdownHeight:SetValue(DB.General.Buttons.Height)
+    DropdownHeight:SetSliderValues(24, 128, 1)
+    DropdownHeight:SetCallback("OnValueChanged", function(_, _, value) DB.General.Buttons.Height = value Portalist:RefreshSizes() end)
+    DropdownHeight:SetRelativeWidth(0.5)
+    ColoursContainer:AddChild(DropdownHeight)
 
     local ButtonHeader = AG:Create("Heading")
     ButtonHeader:SetText("Buttons")
@@ -219,7 +254,7 @@ function Portalist:CreateGUI()
                             end
 
                             local Toggle = AG:Create("CheckBox")
-                            Toggle:SetLabel(Portalist:CreateDisplayName(spellID, isSpell))
+                            Toggle:SetLabel(CreateDisplayName(spellID, isSpell))
                             Toggle:SetValue(activeTable[spellID] == true)
                             Toggle:SetRelativeWidth(0.5)
                             Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portalist:GenerateDropdownData() end)
@@ -231,7 +266,7 @@ function Portalist:CreateGUI()
             else
                 for spellID in pairs(dataList) do
                     local Toggle = AG:Create("CheckBox")
-                    Toggle:SetLabel(Portalist:CreateDisplayName(spellID, isSpell))
+                    Toggle:SetLabel(CreateDisplayName(spellID, isSpell))
                     Toggle:SetValue(activeTable[spellID] == true)
                     Toggle:SetRelativeWidth(0.5)
                     Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[spellID] = value Portalist:GenerateDropdownData() end)
@@ -244,7 +279,7 @@ function Portalist:CreateGUI()
 
         for itemID in pairs(dataList) do
             local Toggle = AG:Create("CheckBox")
-            Toggle:SetLabel(Portalist:CreateDisplayName(itemID, isSpell))
+            Toggle:SetLabel(CreateDisplayName(itemID, isSpell))
             Toggle:SetValue(activeTable[itemID] == true)
             Toggle:SetRelativeWidth(0.5)
             Toggle:SetCallback("OnValueChanged", function(_, _, value) activeTable[itemID] = value Portalist:GenerateDropdownData() end)

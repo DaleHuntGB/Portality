@@ -387,14 +387,13 @@ function Portalist:CreateDisplayName(spellID, isSpell)
         local spellData = C_Spell.GetSpellInfo(spellID)
         if spellData then
             local spellName = Portalist.Data.ChallengeModePortalsByName[spellID] or Portalist.Data.PortalByName[spellID] or spellData.name
-            local spellTexture = spellData.iconID
-            return string.format("|T%s:24:24|t |c%s%s|r", spellTexture, isLearntColour, spellName)
+            return string.format("|c%s%s|r", isLearntColour, spellName)
         end
     else
         local itemName = Portalist.Data.WormholesByName[spellID] or select(1, C_Item.GetItemInfo(spellID))
         local itemTexture = select(10, C_Item.GetItemInfo(spellID))
         if itemName and itemTexture then
-            return string.format("|T%s:24:24|t |c%s%s|r", itemTexture, isLearntColour, itemName)
+            return string.format("|c%s%s|r", isLearntColour, itemName)
         end
     end
 end

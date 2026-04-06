@@ -7,12 +7,14 @@ local Defaults = {
             Dropdown = {
                 BackgroundColour = { r = 0, g = 0, b = 0, a = 0.8 },
                 BorderColour = { r = 0, g = 0, b = 0, a = 1 },
+                Width = 400,
             },
             Buttons = {
                 BackgroundColour = { r = 0.1, g = 0.1, b = 0.1, a = 0.8 },
                 BorderColour = { r = 0, g = 0, b = 0, a = 1 },
                 HighlightColour = { r = 0.3, g = 0.3, b = 0.3, a = 0.8 },
                 DurationColour = { r = 0.5, g = 0.5, b = 0.5, a = 0.8 },
+                Height = 32,
                 Text = {
                     NormalColour = { r = 1, g = 1, b = 1, a = 1 },
                     DurationColour = { r = 1, g = 1, b = 1, a = 1 },
