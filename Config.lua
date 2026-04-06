@@ -4,6 +4,7 @@ local isGUIOpen = false
 local GUIFrame = nil
 
 function Portalist:CreateGUI()
+    if InCombatLockdown() then return end
     local DB = Portalist.DB.global
     if isGUIOpen then return end
     isGUIOpen = true
