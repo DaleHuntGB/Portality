@@ -1,8 +1,8 @@
 package-as: Portalist
 enable-nolib-creation: yes
 
-curse-id:
-wago-id:
+curse-id: 1506117
+wago-id: x618yyN1
 
 externals:
     Libs/Ace3:
