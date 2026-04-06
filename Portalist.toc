@@ -9,5 +9,5 @@ Libs/Init.xml
 Data.lua
 Defaults.lua
 Dropdown.lua
-PortalistConfig.lua
+Config.lua
 Portalist.lua
