@@ -1,8 +1,12 @@
 ## Title: |cFF8080FFPortalist|r
 ## Interface: 120000
+## Version: @project-version@
 ## SavedVariables: PortalistDB
 ## IconAtlas: dungeon
 ## Category-enUS: |cFF8080FFUnhalted|r Development
+## X-Curse-Project-ID: 1506117
+## X-Wago-ID: x618yyN1
+
 
 Libs/Init.xml
 
