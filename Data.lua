@@ -404,10 +404,21 @@ end
 function Portalist:GenerateDropdownData()
     local DropdownData = {}
 
+    local seasonalPortals = {}
     for spellID, isActive in pairs(Portalist.DB.global.ChallengeModePortals) do
         if isActive and Portalist:IsSpellUsable(spellID) then
-            table.insert(DropdownData, { ID = spellID, name = Portalist:CreateDisplayName(spellID, true), isSpell = true, sortOrder = 2 })
+            if Portalist.DB.global.General.GroupSeasonalPortals and Portalist.Data.CurrentSeason[spellID] then
+                table.insert(seasonalPortals, { ID = spellID, name = Portalist:CreateDisplayName(spellID, true), isSpell = true })
+            else
+                table.insert(DropdownData, { ID = spellID, name = Portalist:CreateDisplayName(spellID, true), isSpell = true, sortOrder = 2 })
+            end
         end
+    end
+
+    if #seasonalPortals > 0 then
+        table.sort(seasonalPortals, function(a, b) return a.name < b.name end)
+        local currentSeasonName = Portalist.Data.ChallengeModePortalsByExpansion[Portalist.Data.ChallengeModePortals[1]]
+        table.insert(DropdownData, { isGroup = true, name = currentSeasonName, icon = 4352494, portals = seasonalPortals, sortOrder = 2 })
     end
 
     for portalID, isActive in pairs(Portalist.DB.global.Portals) do

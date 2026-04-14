@@ -1,10 +1,11 @@
 local _, Portalist = ...
 Portalist.Buttons = {}
 
-local function CreatePortalButton(buttonName, spellData)
+local function CreatePortalButton(buttonName, spellData, parent)
     local DB = Portalist.DB.global.General.Buttons
-    local PortalButton = CreateFrame("Button", buttonName, Portalist.DropdownMenu, "SecureActionButtonTemplate, BackdropTemplate")
-    PortalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, DB.Height)
+    parent = parent or Portalist.DropdownMenu
+    local PortalButton = CreateFrame("Button", buttonName, parent, "SecureActionButtonTemplate, BackdropTemplate")
+    PortalButton:SetSize(parent:GetWidth() - 4, DB.Height)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
     PortalButton:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
@@ -21,7 +22,7 @@ local function CreatePortalButton(buttonName, spellData)
     end
     PortalButton.SpellData = spellData
 
-    PortalButton:SetScript("PostClick", function() Portalist.DropdownMenu:Hide() Portalist.DropdownMenuController:Hide() end)
+    PortalButton:SetScript("PostClick", function() if Portalist.SeasonalSubMenu then Portalist.SeasonalSubMenu:Hide() end Portalist.DropdownMenu:Hide() Portalist.DropdownMenuController:Hide() end)
 
     local ButtonDurationStatusBar = CreateFrame("StatusBar", nil, PortalButton)
     ButtonDurationStatusBar:SetPoint("TOPLEFT", PortalButton, "TOPLEFT", 1, -1)
@@ -109,6 +110,85 @@ local function CreatePortalButton(buttonName, spellData)
     return PortalButton
 end
 
+local function CreateGroupButton(buttonName, groupData)
+    local DB = Portalist.DB.global.General.Buttons
+    local GroupButton = CreateFrame("Button", buttonName, Portalist.DropdownMenu, "BackdropTemplate")
+    GroupButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, DB.Height)
+    GroupButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
+    GroupButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
+    GroupButton:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
+    GroupButton:SetScript("OnEnter", function() GroupButton:SetBackdropColor(DB.HighlightColour.r, DB.HighlightColour.g, DB.HighlightColour.b, DB.HighlightColour.a) end)
+    GroupButton:SetScript("OnLeave", function() GroupButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a) end)
+    GroupButton.GroupData = groupData
+
+    local ButtonIcon = GroupButton:CreateTexture(nil, "OVERLAY")
+    ButtonIcon:SetPoint("LEFT", GroupButton, "LEFT", 2, 0)
+    ButtonIcon:SetSize(DB.Height - 4, DB.Height - 4)
+    ButtonIcon:SetTexture(groupData.icon or (groupData.portals[1] and C_Spell.GetSpellInfo(groupData.portals[1].ID) and C_Spell.GetSpellInfo(groupData.portals[1].ID).iconID))
+
+    local ButtonText = GroupButton:CreateFontString(nil, "OVERLAY")
+    ButtonText:SetFont("Fonts\\FRIZQT__.TTF", DB.Text.Size, "OUTLINE")
+    ButtonText:SetPoint("LEFT", ButtonIcon, "RIGHT", 3, 0.1)
+    ButtonText:SetText(groupData.name)
+    ButtonText:SetTextColor(DB.Text.NormalColour.r, DB.Text.NormalColour.g, DB.Text.NormalColour.b, DB.Text.NormalColour.a)
+    ButtonText:SetWidth(GroupButton:GetWidth() * 0.5)
+    ButtonText:SetWordWrap(false)
+    ButtonText:SetJustifyH("LEFT")
+
+    local ArrowText = GroupButton:CreateFontString(nil, "OVERLAY")
+    ArrowText:SetFont("Fonts\\FRIZQT__.TTF", DB.Text.Size, "OUTLINE")
+    ArrowText:SetPoint("RIGHT", GroupButton, "RIGHT", -2, 0.1)
+    ArrowText:SetText(">")
+    ArrowText:SetTextColor(DB.Text.NormalColour.r, DB.Text.NormalColour.g, DB.Text.NormalColour.b, DB.Text.NormalColour.a)
+    ArrowText:SetJustifyH("RIGHT")
+
+    GroupButton:SetScript("OnClick", function() Portalist:ToggleSeasonalSubMenu(groupData, GroupButton) end)
+
+    return GroupButton
+end
+
+function Portalist:ToggleSeasonalSubMenu(groupData, anchorButton)
+    if Portalist.SeasonalSubMenu and Portalist.SeasonalSubMenu:IsShown() then
+        Portalist.SeasonalSubMenu:Hide()
+        return
+    end
+
+    local dropdownDB = Portalist.DB.global.General.Dropdown
+    if not Portalist.SeasonalSubMenu then
+        local SubMenu = CreateFrame("Frame", "PortalistSeasonalSubMenu", UIParent, "BackdropTemplate")
+        SubMenu:SetSize(dropdownDB.Width, 1)
+        SubMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
+        SubMenu:SetBackdropColor(dropdownDB.BackgroundColour.r, dropdownDB.BackgroundColour.g, dropdownDB.BackgroundColour.b, dropdownDB.BackgroundColour.a)
+        SubMenu:SetBackdropBorderColor(dropdownDB.BorderColour.r, dropdownDB.BorderColour.g, dropdownDB.BorderColour.b, dropdownDB.BorderColour.a)
+        SubMenu:Hide()
+        SubMenu.Buttons = {}
+        Portalist.SeasonalSubMenu = SubMenu
+    end
+
+    for _, btn in ipairs(Portalist.SeasonalSubMenu.Buttons) do btn:Hide() btn:SetParent(nil) end
+    Portalist.SeasonalSubMenu.Buttons = {}
+
+    Portalist.SeasonalSubMenu:SetSize(dropdownDB.Width, 1)
+    for portalIndex, portalData in ipairs(groupData.portals) do
+        local buttonName = "PortalistSeasonalSubMenuButton" .. portalIndex
+        local SubButton = CreatePortalButton(buttonName, portalData, Portalist.SeasonalSubMenu)
+        if portalIndex == 1 then
+            SubButton:SetPoint("TOP", Portalist.SeasonalSubMenu, "TOP", 0, -2)
+        else
+            SubButton:SetPoint("TOP", Portalist.SeasonalSubMenu.Buttons[portalIndex - 1], "BOTTOM", 0, -1)
+        end
+        table.insert(Portalist.SeasonalSubMenu.Buttons, SubButton)
+    end
+
+    local buttonDB = Portalist.DB.global.General.Buttons
+    local subMenuHeight = #Portalist.SeasonalSubMenu.Buttons > 0 and #Portalist.SeasonalSubMenu.Buttons * (buttonDB.Height + 1) + 3 or buttonDB.Height
+    Portalist.SeasonalSubMenu:SetSize(dropdownDB.Width, subMenuHeight)
+
+    Portalist.SeasonalSubMenu:ClearAllPoints()
+    Portalist.SeasonalSubMenu:SetPoint("TOPLEFT", Portalist.DropdownMenu, "TOPRIGHT", 1, 0)
+    Portalist.SeasonalSubMenu:Show()
+end
+
 function Portalist:CreateDropdownMenu()
     local DB = Portalist.DB.global.General.Dropdown
     if InCombatLockdown() then return end
@@ -120,7 +200,7 @@ function Portalist:CreateDropdownMenu()
     DropdownMenu:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
     DropdownMenu:RegisterEvent("PLAYER_REGEN_DISABLED")
     DropdownMenu:RegisterEvent("ENCOUNTER_START")
-    DropdownMenu:SetScript("OnEvent", function(_, event) if event == "PLAYER_REGEN_DISABLED" or event == "ENCOUNTER_START" and DropdownMenu:IsShown() then DropdownMenu:Hide() end end)
+    DropdownMenu:SetScript("OnEvent", function(_, event) if event == "PLAYER_REGEN_DISABLED" or event == "ENCOUNTER_START" and DropdownMenu:IsShown() then if Portalist.SeasonalSubMenu then Portalist.SeasonalSubMenu:Hide() end DropdownMenu:Hide() end end)
     DropdownMenu:Hide()
 
     local DisclaimerText = DropdownMenu:CreateFontString(nil, "OVERLAY")
@@ -137,11 +217,22 @@ function Portalist:CreateDropdownMenu()
     Portalist:GenerateDropdownData()
 
     for spellIndex, spellData in ipairs(Portalist.DropdownData) do
-        local isUsable = false;
-        if spellData.isSpell then isUsable = Portalist:IsSpellUsable(spellData.ID) else isUsable = Portalist:IsItemUsable(spellData.ID) end
+        local isUsable = false
+        if spellData.isGroup then
+            isUsable = true
+        elseif spellData.isSpell then
+            isUsable = Portalist:IsSpellUsable(spellData.ID)
+        else
+            isUsable = Portalist:IsItemUsable(spellData.ID)
+        end
         if isUsable then
             local buttonName = "PortalistDropdownButton" .. spellIndex
-            local PortalButton = CreatePortalButton(buttonName, spellData)
+            local PortalButton
+            if spellData.isGroup then
+                PortalButton = CreateGroupButton(buttonName, spellData)
+            else
+                PortalButton = CreatePortalButton(buttonName, spellData)
+            end
             if spellIndex == 1 then
                 PortalButton:SetPoint("TOP", DropdownMenu, "TOP", 0, -2)
             else
@@ -161,8 +252,8 @@ function Portalist:CreateDropdownMenu()
     DropdownMenuController:EnableMouse(true)
     DropdownMenuController:SetPropagateMouseClicks(true)
     DropdownMenuController:SetPropagateKeyboardInput(true)
-    DropdownMenuController:SetScript("OnMouseDown", function() if Portalist.DropdownMenu and Portalist.DropdownMenu:IsShown() then Portalist.DropdownMenu:Hide() DropdownMenuController:Hide() end end)
-    DropdownMenuController:SetScript("OnKeyDown", function(self, key) if key == "ESCAPE" and Portalist.DropdownMenu and Portalist.DropdownMenu:IsShown() then Portalist.DropdownMenu:Hide() DropdownMenuController:Hide() end end)
+    DropdownMenuController:SetScript("OnMouseDown", function() if Portalist.DropdownMenu and Portalist.DropdownMenu:IsShown() then if Portalist.SeasonalSubMenu then Portalist.SeasonalSubMenu:Hide() end Portalist.DropdownMenu:Hide() DropdownMenuController:Hide() end end)
+    DropdownMenuController:SetScript("OnKeyDown", function(self, key) if key == "ESCAPE" and Portalist.DropdownMenu and Portalist.DropdownMenu:IsShown() then if Portalist.SeasonalSubMenu then Portalist.SeasonalSubMenu:Hide() end Portalist.DropdownMenu:Hide() DropdownMenuController:Hide() end end)
     DropdownMenuController:Hide()
 
     Portalist.DropdownMenuController = DropdownMenuController
@@ -204,12 +295,14 @@ function Portalist:RefreshSizes()
             portalButton:SetPoint("TOP", Portalist.DropdownMenu.Buttons[index - 1], "BOTTOM", 0, -1)
         end
         portalButton:SetSize(Portalist.DropdownMenu:GetWidth() - 4, Portalist.DB.global.General.Buttons.Height)
-        portalButton.ButtonIcon:SetSize(Portalist.DB.global.General.Buttons.Height - 4, Portalist.DB.global.General.Buttons.Height - 4)
-        portalButton.ButtonSpellText:SetWidth(portalButton:GetWidth() * 0.5)
-        portalButton.ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", Portalist.DB.global.General.Buttons.Text.Size, "OUTLINE")
-        portalButton.ButtonDurationText:SetPoint("RIGHT", portalButton, "RIGHT", -2, 0.1)
-        portalButton.ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", Portalist.DB.global.General.Buttons.Text.Size, "OUTLINE")
-        portalButton.ButtonDurationStatusBar:SetHeight(Portalist.DB.global.General.Buttons.Height - 2)
+        if not portalButton.GroupData then
+            portalButton.ButtonIcon:SetSize(Portalist.DB.global.General.Buttons.Height - 4, Portalist.DB.global.General.Buttons.Height - 4)
+            portalButton.ButtonSpellText:SetWidth(portalButton:GetWidth() * 0.5)
+            portalButton.ButtonSpellText:SetFont("Fonts\\FRIZQT__.TTF", Portalist.DB.global.General.Buttons.Text.Size, "OUTLINE")
+            portalButton.ButtonDurationText:SetPoint("RIGHT", portalButton, "RIGHT", -2, 0.1)
+            portalButton.ButtonDurationText:SetFont("Fonts\\FRIZQT__.TTF", Portalist.DB.global.General.Buttons.Text.Size, "OUTLINE")
+            portalButton.ButtonDurationStatusBar:SetHeight(Portalist.DB.global.General.Buttons.Height - 2)
+        end
     end
 end
 
@@ -217,12 +310,18 @@ function Portalist:RefreshDropdownMenu()
     local DB = Portalist.DB.global.General.Dropdown
     if InCombatLockdown() then return end
     if not Portalist.DropdownMenu then return end
+    if Portalist.SeasonalSubMenu then Portalist.SeasonalSubMenu:Hide() end
     for _, portalButton in ipairs(Portalist.DropdownMenu.Buttons or {}) do portalButton:Hide() portalButton:SetParent(nil) end
     Portalist.DropdownMenu.Buttons = {}
     Portalist:GenerateDropdownData()
     for spellIndex, spellData in ipairs(Portalist.DropdownData) do
         local buttonName = "PortalistDropdownButton" .. spellIndex
-        local PortalButton = CreatePortalButton(buttonName, spellData)
+        local PortalButton
+        if spellData.isGroup then
+            PortalButton = CreateGroupButton(buttonName, spellData)
+        else
+            PortalButton = CreatePortalButton(buttonName, spellData)
+        end
         if spellIndex == 1 then
             PortalButton:SetPoint("TOP", Portalist.DropdownMenu, "TOP", 0, -2)
         else
@@ -238,6 +337,7 @@ function Portalist:ToggleDropdownMenu()
     if InCombatLockdown() then return end
     if not Portalist.DropdownMenu then Portalist:CreateDropdownMenu() end
     if Portalist.DropdownMenu:IsShown() then
+        if Portalist.SeasonalSubMenu then Portalist.SeasonalSubMenu:Hide() end
         Portalist.DropdownMenu:Hide()
         Portalist.DropdownMenuController:Hide()
     else

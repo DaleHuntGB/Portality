@@ -4,6 +4,7 @@ local Defaults = {
     global = {
         General = {
             ShowLoginMessage = true,
+            GroupSeasonalPortals = true,
             Dropdown = {
                 BackgroundColour = { r = 0, g = 0, b = 0, a = 0.8 },
                 BorderColour = { r = 0, g = 0, b = 0, a = 1 },
