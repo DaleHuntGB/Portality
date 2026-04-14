@@ -8,6 +8,7 @@ end
 
 function AddOn:OnEnable()
     Portalist:GenerateDropdownData()
+    Portalist:CVarCheck()
 
     SLASH_PORTALIST1 = "/portalist"
     SLASH_PORTALIST2 = "/port"

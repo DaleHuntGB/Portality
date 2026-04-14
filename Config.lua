@@ -22,6 +22,23 @@ local function CreateDisplayName(spellID, isSpell)
     end
 end
 
+function Portalist:CVarCheck()
+    local isKeyDownActive = C_CVar.GetCVar("ActionButtonUseKeyDown") == "1"
+    if isKeyDownActive then return end
+
+    StaticPopupDialogs["PORTALIST_KEYDOWN_WARNING"] = {
+        text = "|cFF8080FFPortalist|r will only work if '|cFFFFCC00Action Button Use Key Down|r' is enabled. Do you want to enable it now?",
+        button1 = "Yes",
+        button2 = "No",
+        OnAccept = function() C_CVar.SetCVar("ActionButtonUseKeyDown", 1) end,
+        OnCancel = function() C_AddOns.DisableAddOn("Portalist") C_UI.Reload() end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = false,
+    }
+    StaticPopup_Show("PORTALIST_KEYDOWN_WARNING")
+end
+
 function Portalist:CreateGUI()
     if InCombatLockdown() then return end
     local DB = Portalist.DB.global
