@@ -9,8 +9,8 @@ local function CreatePortalButton(buttonName, spellData, parent)
     PortalButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
     PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a)
     PortalButton:SetBackdropBorderColor(DB.BorderColour.r, DB.BorderColour.g, DB.BorderColour.b, DB.BorderColour.a)
-    PortalButton:SetScript("OnEnter", function() PortalButton:SetBackdropColor(DB.HighlightColour.r, DB.HighlightColour.g, DB.HighlightColour.b, DB.HighlightColour.a) end)
-    PortalButton:SetScript("OnLeave", function() PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a) end)
+    PortalButton:SetScript("OnEnter", function() PortalButton:SetBackdropColor(DB.HighlightColour.r, DB.HighlightColour.g, DB.HighlightColour.b, DB.HighlightColour.a) Portalist:FetchTooltipInformationOnDropdown(parent, PortalButton, spellData.ID, spellData.isSpell) end)
+    PortalButton:SetScript("OnLeave", function() PortalButton:SetBackdropColor(DB.BackgroundColour.r, DB.BackgroundColour.g, DB.BackgroundColour.b, DB.BackgroundColour.a) GameTooltip:Hide() end)
     PortalButton:RegisterForClicks("AnyUp", "AnyDown")
 
     if spellData.isSpell then
