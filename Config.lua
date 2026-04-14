@@ -26,17 +26,51 @@ function Portalist:CVarCheck()
     local isKeyDownActive = C_CVar.GetCVar("ActionButtonUseKeyDown") == "1"
     if isKeyDownActive then return end
 
-    StaticPopupDialogs["PORTALIST_KEYDOWN_WARNING"] = {
-        text = "|cFF8080FFPortalist|r will only work if '|cFFFFCC00Action Button Use Key Down|r' is enabled. Do you want to enable it now?",
-        button1 = "Yes",
-        button2 = "No",
-        OnAccept = function() C_CVar.SetCVar("ActionButtonUseKeyDown", 1) end,
-        OnCancel = function() C_AddOns.DisableAddOn("Portalist") C_UI.Reload() end,
-        timeout = 0,
-        whileDead = true,
-        hideOnEscape = false,
-    }
-    StaticPopup_Show("PORTALIST_KEYDOWN_WARNING")
+    local PopupMenu = CreateFrame("Frame", "PortalistPopupMenu", UIParent, "BackdropTemplate")
+    PopupMenu:SetSize(500, 110)
+    PopupMenu:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    PopupMenu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
+    PopupMenu:SetBackdropColor(0, 0, 0, 0.8)
+    PopupMenu:SetBackdropBorderColor(0, 0, 0, 1)
+    PopupMenu:RegisterEvent("PLAYER_LOGIN")
+    PopupMenu:RegisterEvent("PLAYER_ENTERING_WORLD")
+    PopupMenu:SetScript("OnEvent", function(_, event) if (event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD") then PopupMenu:Show() end end)
+
+    PopupMenu.Text = PopupMenu:CreateFontString(nil, "OVERLAY")
+    PopupMenu.Text:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    PopupMenu.Text:SetPoint("TOP", PopupMenu, "TOP", 0, -10)
+    PopupMenu.Text:SetText("|cFF8080FFPortalist|r requires '|cFFFFCC00Action Button Use Key Down|r' to be enabled.\n\nDo you want to enable it now?")
+
+    PopupMenu.AcceptButton = CreateFrame("Button", nil, PopupMenu, "BackdropTemplate")
+    PopupMenu.AcceptButton:SetPoint("BOTTOMRIGHT", PopupMenu, "BOTTOM", -1, 10)
+    PopupMenu.AcceptButton:SetSize(100, 32)
+    PopupMenu.AcceptButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
+    PopupMenu.AcceptButton:SetBackdropColor(0.1, 0.6, 0.1, 1)
+    PopupMenu.AcceptButton:SetBackdropBorderColor(0, 0, 0, 1)
+    PopupMenu.AcceptButton:SetScript("OnClick", function() C_CVar.SetCVar("ActionButtonUseKeyDown", 1) PopupMenu:Hide() end)
+    PopupMenu.AcceptButton:SetScript("OnEnter", function() PopupMenu.AcceptButton:SetBackdropColor(0.1, 0.8, 0.1, 1) end)
+    PopupMenu.AcceptButton:SetScript("OnLeave", function() PopupMenu.AcceptButton:SetBackdropColor(0.1, 0.6, 0.1, 1) end)
+
+    PopupMenu.AcceptButton.Text = PopupMenu.AcceptButton:CreateFontString(nil, "OVERLAY")
+    PopupMenu.AcceptButton.Text:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    PopupMenu.AcceptButton.Text:SetPoint("CENTER", PopupMenu.AcceptButton, "CENTER", 0, 0)
+    PopupMenu.AcceptButton.Text:SetText("Yes")
+
+    PopupMenu.CancelButton = CreateFrame("Button", nil, PopupMenu, "BackdropTemplate")
+    PopupMenu.CancelButton:SetPoint("BOTTOMLEFT", PopupMenu, "BOTTOM", 0, 10)
+    PopupMenu.CancelButton:SetSize(100, 32)
+    PopupMenu.CancelButton:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1, })
+    PopupMenu.CancelButton:SetBackdropColor(0.6, 0.1, 0.1, 1)
+    PopupMenu.CancelButton:SetBackdropBorderColor(0, 0, 0, 1)
+    PopupMenu.CancelButton:SetScript("OnClick", function() C_AddOns.DisableAddOn("Portalist") C_UI.Reload() end)
+    PopupMenu.CancelButton:SetScript("OnEnter", function() PopupMenu.CancelButton:SetBackdropColor(0.8, 0.1, 0.1, 1) end)
+    PopupMenu.CancelButton:SetScript("OnLeave", function() PopupMenu.CancelButton:SetBackdropColor(0.6, 0.1, 0.1, 1) end)
+
+
+    PopupMenu.CancelButton.Text = PopupMenu.CancelButton:CreateFontString(nil, "OVERLAY")
+    PopupMenu.CancelButton.Text:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    PopupMenu.CancelButton.Text:SetPoint("CENTER", PopupMenu.CancelButton, "CENTER", 0, 0)
+    PopupMenu.CancelButton.Text:SetText("No")
 end
 
 function Portalist:CreateGUI()
